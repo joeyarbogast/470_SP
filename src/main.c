@@ -28,7 +28,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <time.h>
 #include "GLibFacade.h"
 
 #include "shamir.h"
@@ -58,7 +58,7 @@ char * stdin_buffer() {
 int main( int argc, char** argv ) {
 	
 	seed_random();
-
+	clock_t share_time=0, decrypt_time=0;
 	if (argc == 4) {
 		// Create shares -- "secret"  n  t 
 
@@ -67,10 +67,11 @@ int main( int argc, char** argv ) {
 		int n = atoi(argv[2]);
 
 		int t = atoi(argv[3]);
-
+		share_time = clock();
 		char * shares = generate_share_strings(secret, n, t);
-
+		share_time = clock() - share_time;
 		fprintf(stdout, "%s", shares);
+		
 
 		free(shares);
 	} else if (argc == 3) {
@@ -80,9 +81,9 @@ int main( int argc, char** argv ) {
 		int n = atoi(argv[1]);
 
 		int t = atoi(argv[2]);
-
+		share_time = clock();
 		char * shares = generate_share_strings(secret, n, t);
-
+		share_time = clock() - share_time;
 		fprintf(stdout, "%s\n", shares);
 
 		free(shares);
@@ -90,14 +91,17 @@ int main( int argc, char** argv ) {
 	} else {
 		// Read shares from stdin -- < shares.txt
 		char * shares = stdin_buffer();
-
+		decrypt_time = clock();
 		char * secret = extract_secret_from_share_strings(shares);
-
+		decrypt_time = clock() - decrypt_time;
 		fprintf(stdout, "%s\n", secret);
 
 		free(secret);
 
 		free(shares);
 	}
+	fprintf(stdout,"Share time: %.4f   Decrypt time: %.4f\n",
+		(float)share_time/(float)CLOCKS_PER_SEC,
+		(float)decrypt_time/(float)CLOCKS_PER_SEC);	
 
 }
