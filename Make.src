@@ -1,0 +1,31 @@
+# -*- makefile -*-
+
+########################################
+# Begin making edits here as necessary #
+########################################
+
+# Project executable name -- CHANGE THIS TO BUILD EXECUTABLE
+EXENAME = cfpb
+
+# Project source code directories
+SRC_SUBDIRS = src/main src/fsm src/http
+
+# Source code listing
+# To add another source code file for the project, remove the "# "
+# at the beginning of the second line and change the name from
+# "another.c" to the name of your source code file
+
+# For the ADT demo, main() is in demo. Include the two *_demo.c files
+src/main_SRC    = src/main/main.c
+src/main_SRC   += src/main/parse.c
+
+# For the real project, put your state machine and query code in query
+src/fsm_SRC   = src/fsm/statemodel.c
+
+src/http_SRC  = src/http/http.c
+
+# Pre-compiled objects
+SRC_OBJECTS  = ../objects/index.obj ../objects/records.obj ../objects/hash.obj
+SRC_OBJECTS += ../objects/indexing.obj ../objects/initializing.obj ../objects/list.obj
+SRC_OBJECTS += ../objects/listening.obj ../objects/processing.obj ../objects/query.obj
+SRC_OBJECTS += ../objects/state.obj ../objects/tree.obj ../objects/waiting_on_index.obj
