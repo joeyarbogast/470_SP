@@ -7,6 +7,7 @@
 | Date:      | 2015-06-29 |
 | Copyright: | Copyright © 2015 Fletcher T. Penney.    |
 | Version:   | 0.2.0      |
+| Parallel Version: 	| Joey Arbogast, Isaac Sumner	|
 
 
 ## Introduction ##
