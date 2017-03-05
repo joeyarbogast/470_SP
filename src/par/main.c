@@ -31,6 +31,7 @@
 #include <time.h>
 #include "GLibFacade.h"
 #include <omp.h>
+#include <mpi.h>
 #include "par_shamir.h"
 
 char * stdin_buffer() {
@@ -55,7 +56,13 @@ char * stdin_buffer() {
 
 
 int main( int argc, char** argv ) {
-        double shares_gen, decrypt;	
+    
+    // Initialize MPI stuff
+    MPI_Init(&argc, &argv);
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    double shares_gen, decrypt;	
 	seed_random();
 	if (argc == 4) {
 		// Create shares -- "secret"  n  t 
@@ -68,7 +75,8 @@ int main( int argc, char** argv ) {
 		shares_gen = omp_get_wtime();
 		char * shares = generate_share_strings(secret, n, t);
 		shares_gen = omp_get_wtime() - shares_gen;
-		fprintf(stdout, "%s", shares);
+        if (rank == 0)
+		    fprintf(stdout, "%s", shares);
 		
 
 		free(shares);
@@ -82,7 +90,8 @@ int main( int argc, char** argv ) {
 		shares_gen = omp_get_wtime();
 		char * shares = generate_share_strings(secret, n, t);
 		shares_gen = omp_get_wtime() - shares_gen;
-		fprintf(stdout, "%s\n", shares);
+		if (rank == 0)
+            fprintf(stdout, "%s\n", shares);
 
 		free(shares);
 		free(secret);
@@ -92,14 +101,16 @@ int main( int argc, char** argv ) {
 		decrypt = omp_get_wtime();
 		char * secret = extract_secret_from_share_strings(shares);
 		decrypt = omp_get_wtime() - decrypt;
-		fprintf(stdout, "%s\n", secret);
+		if (rank == 0)
+            fprintf(stdout, "%s\n", secret);
 
 		free(secret);
 
 		free(shares);
 	}
-	printf("Share time: %.4f   Decrypt time: %.4f\n",
-		shares_gen,decrypt);
+	//printf("Share time: %.4f   Decrypt time: %.4f\n",
+	//	shares_gen,decrypt);
+    MPI_Finalize();
 	return EXIT_SUCCESS;
 
 }

@@ -57,6 +57,7 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
+#include <mpi.h>
 #include "par_shamir.h"
 
 int num_threads=1;
@@ -87,7 +88,9 @@ unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
 }
 
 void seed_random(void) {
-	unsigned long seed = mix(clock(), time(NULL), getpid());
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	unsigned long seed = mix(clock(), time(NULL), rank);
 	srand(seed);
 }
 
