@@ -120,7 +120,6 @@ int modular_exponentiation(int base,int exp,int mod)
 	t = threshold shares to recreate the number
 */
 int * split_number(int number,int n, int t) {
-	int *ret_shares;	
 	int *shares = malloc(sizeof(int)*n);
 	int coef[t];
 	int x,i;
@@ -148,8 +147,7 @@ int * split_number(int number,int n, int t) {
 
 			shares[x] = y;
 		}
-		ret_shares = shares;
-		return ret_shares;  
+		return shares;  
 	
 }
 
