@@ -5,7 +5,7 @@ CFLAGS = --std=c99 -O2 -Wall
 LDFLAGS = -lm
 
 default: par_shamir
-par_shamir: main.o par_shamir.o par_shamir.h GLibFacade.o GLibFacade.h strtok.o strtok.h
+par_shamir: main.o par_shamir.o par_shamir.h GLibFacade.o GLibFacade.h strtok.o strtok.h omp_timer.h
 	$(MPI) $(CFLAGS) -fopenmp -o par_shamir main.o par_shamir.o strtok.o GLibFacade.o $(LDFLAGS)
 	rm -f *.o;
 	rm -f *.gch

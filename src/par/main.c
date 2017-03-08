@@ -30,7 +30,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include "GLibFacade.h"
+#ifdef _OPENMP
 #include <omp.h>
+#include "omp_timer.h"
+#endif
 #include <mpi.h>
 #include "par_shamir.h"
 
@@ -62,48 +65,65 @@ int main( int argc, char** argv ) {
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    double shares_gen, decrypt;	
+//    double shares_time, decrypt_time;	
 	seed_random();
 	if (argc == 4) {
 		// Create shares -- "secret"  n  t 
-
+		FILE *fp;
+		fp = fopen("keys.txt","w");
 		char * secret = argv[1];
 
 		int n = atoi(argv[2]);
 
 		int t = atoi(argv[3]);
-		shares_gen = omp_get_wtime();
+		//shares_time = omp_get_wtime();
+		START_TIMER(shares_time);
 		char * shares = generate_share_strings(secret, n, t);
-		shares_gen = omp_get_wtime() - shares_gen;
-        if (rank == 0)
-		    fprintf(stdout, "%s", shares);
-		
-
+		STOP_TIMER(shares_time);
+		//shares_time = omp_get_wtime() - shares_time;
+        if (rank == 0){
+		    //fprintf(stdout, "%s", shares);
+		   fprintf(fp,"%s\n",shares);
+		   printf("Shares Gen Time: %8.4fs\n",GET_TIMER(shares_time));	
+		}
+		fclose(fp);
 		free(shares);
 	} else if (argc == 3) {
 		// Read secret from stdin -- n t < cat secret.txt
 		char * secret = stdin_buffer();
-
+		
 		int n = atoi(argv[1]);
 
 		int t = atoi(argv[2]);
-		shares_gen = omp_get_wtime();
+		FILE *fp;
+		fp = fopen("keys.txt","w");
+		//shares_time = omp_get_wtime();
+		START_TIMER(shares_time);
 		char * shares = generate_share_strings(secret, n, t);
-		shares_gen = omp_get_wtime() - shares_gen;
-		if (rank == 0)
-            fprintf(stdout, "%s\n", shares);
+		STOP_TIMER(shares_time);
+		//shares_time = omp_get_wtime() - shares_time;
+		if (rank == 0){
+            		//fprintf(stdout, "%s\n", shares);
 
+			fprintf(fp,"%s\n",shares);
+			printf("Shares Gen Time: %8.4fs\n",GET_TIMER(shares_time));
+		}
+
+		fclose(fp);
 		free(shares);
 		free(secret);
 	} else {
 		// Read shares from stdin -- < shares.txt
 		char * shares = stdin_buffer();
-		decrypt = omp_get_wtime();
+		//decrypt_time = omp_get_wtime();
+		START_TIMER(decrypt_time);
 		char * secret = extract_secret_from_share_strings(shares);
-		decrypt = omp_get_wtime() - decrypt;
-		if (rank == 0)
-            fprintf(stdout, "%s\n", secret);
-
+	//	decrypt_time = omp_get_wtime() - decrypt_time;
+		STOP_TIMER(decrypt_time);
+		if (rank == 0){
+            		fprintf(stdout, "%s\n", secret);
+			printf("Decrypt Time: %8.4fs\n",GET_TIMER(decrypt_time));
+		}
 		free(secret);
 
 		free(shares);
