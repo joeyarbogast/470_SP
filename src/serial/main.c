@@ -28,9 +28,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "GLibFacade.h"
-
 #include "shamir.h"
 
 
@@ -58,41 +58,49 @@ char * stdin_buffer() {
 int main( int argc, char** argv ) {
 	
 	seed_random();
-
+	
 	if (argc == 4) {
 		// Create shares -- "secret"  n  t 
-
+		FILE *fp;
+		fp = fopen("keys.txt","w");
 		char * secret = argv[1];
 
 		int n = atoi(argv[2]);
 
 		int t = atoi(argv[3]);
-
+		clock_t shares_time = clock();
 		char * shares = generate_share_strings(secret, n, t);
-
-		fprintf(stdout, "%s", shares);
-
+		shares_time = clock() - shares_time;
+		//fprintf(stdout, "%s", shares);
+		printf("Share generation: %.4f\n",(float)shares_time/(float)CLOCKS_PER_SEC);
+		fprintf(fp,"%s\n",shares);
+		fclose(fp);
 		free(shares);
-	} else if (argc == 3) {
+	} else if(argc == 3) {
 		// Read secret from stdin -- n t < cat secret.txt
+		FILE *fp;
+		fp = fopen("keys.txt","w");
 		char * secret = stdin_buffer();
 
 		int n = atoi(argv[1]);
 
 		int t = atoi(argv[2]);
-
+		clock_t shares_time = clock();
 		char * shares = generate_share_strings(secret, n, t);
-
-		fprintf(stdout, "%s\n", shares);
-
+		shares_time = clock() - shares_time;
+		printf("Shares generation: %.4f\n",(float)shares_time/(float)CLOCKS_PER_SEC);
+		//fprintf(stdout, "%s\n", shares);
+		fprintf(fp,"%s\n",shares);
+		fclose(fp);
 		free(shares);
 		free(secret);
 	} else {
 		// Read shares from stdin -- < shares.txt
 		char * shares = stdin_buffer();
-
+		clock_t decrypt_time = clock();
 		char * secret = extract_secret_from_share_strings(shares);
-
+		decrypt_time = clock() - decrypt_time;
+		printf("Decrypt: %.4f\n",(float)decrypt_time/(float)CLOCKS_PER_SEC);
 		fprintf(stdout, "%s\n", secret);
 
 		free(secret);
