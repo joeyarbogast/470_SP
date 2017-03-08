@@ -37,6 +37,7 @@
 #include <mpi.h>
 #include "par_shamir.h"
 
+
 char * stdin_buffer() {
 	/* Read from stdin and return a char *
 		`result` will need to be freed elsewhere */
@@ -75,7 +76,6 @@ int main( int argc, char** argv ) {
 		int n = atoi(argv[2]);
 
 		int t = atoi(argv[3]);
-		
 		START_TIMER(shares_time);
 		char * shares = generate_share_strings(secret, n, t);
 		STOP_TIMER(shares_time);
@@ -95,7 +95,6 @@ int main( int argc, char** argv ) {
 		int t = atoi(argv[2]);
 		FILE *fp;
 		fp = fopen("keys.txt","w");
-		
 		START_TIMER(shares_time);
 		char * shares = generate_share_strings(secret, n, t);
 		STOP_TIMER(shares_time);

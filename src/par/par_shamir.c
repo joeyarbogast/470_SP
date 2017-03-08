@@ -61,7 +61,7 @@
 #include "par_shamir.h"
 
 int num_threads=1;
-static int prime = 257;	
+static int prime = 257;
 /*
 	http://stackoverflow.com/questions/322938/recommended-way-to-initialize-srand
 
@@ -297,7 +297,6 @@ char ** split_string(char * secret, int n, int t) {
 	char **shares = malloc(sizeof(char *) * n);
 	int len = strlen(secret);
 	int i;
-{
 	for (i = 0; i < n; ++i)
 	{
 		/* need two characters to encode each character */
@@ -311,7 +310,6 @@ char ** split_string(char * secret, int n, int t) {
 		sprintf(shares[i], "%02X%02XAA",(i+1),t);
 	}
 	/* Now, handle the secret */
-	
 	for (i = 0; i < len; ++i)
 	{
 		// fprintf(stderr, "char %c: %d\n", secret[i], (unsigned char) secret[i]);
@@ -334,7 +332,6 @@ char ** split_string(char * secret, int n, int t) {
 
 		free(chunks);
 	}
-}
 	// fprintf(stderr, "%s\n", secret);
 	return shares;
 }
@@ -448,7 +445,6 @@ char * generate_share_strings(char * secret, int n, int t) {
 	int i;
 
 	char * shares = malloc(key_len * n + 1);
-	
 	for (i = 0; i < n; ++i)
 	{
 		sprintf(shares + i * key_len, "%s\n", result[i]);
