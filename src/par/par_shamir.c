@@ -133,7 +133,6 @@ int * split_number(int number,int n, int t) {
 		for (x = 0; x < n; ++x)
 		{
 			int y = coef[0];
-
 			/* Calculate the shares */
 			for (i = 1; i < t; ++i)
 			{
@@ -235,7 +234,6 @@ int join_shares(int *xy_pairs, int n) {
 	long value;
 	int i;
 	int j;
-
 	for (i = 0; i < n; ++i)
 	{
 		numerator = 1;
@@ -254,11 +252,11 @@ int join_shares(int *xy_pairs, int n) {
 		value = xy_pairs[i * 2 + 1];
 
 		secret = (secret + (value * numerator * modInverse(denominator))) % prime;
+	
 	}
-
+	
 	/* Sometimes we're getting negative numbers, and need to fix that */
 	secret = (secret + prime) % prime;
-
 	return secret;
 }
 
@@ -301,11 +299,10 @@ void Test_join_shares(CuTest* tc) {
 */
 
 char ** split_string(char * secret, int n, int t) {
+	char **shares = malloc(sizeof(char *) * n);
 	int len = strlen(secret);
 
-	char ** shares = malloc (sizeof(char *) * n);
 	int i;
-
 	for (i = 0; i < n; ++i)
 	{
 		/* need two characters to encode each character */
@@ -346,8 +343,8 @@ char ** split_string(char * secret, int n, int t) {
 		free(chunks);
 	}
 
-	// fprintf(stderr, "%s\n", secret);
 
+	// fprintf(stderr, "%s\n", secret);
 	return shares;
 }
 
