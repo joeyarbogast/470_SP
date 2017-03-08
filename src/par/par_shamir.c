@@ -62,7 +62,6 @@
 
 int num_threads=1;
 static int prime = 257;	
-
 /*
 	http://stackoverflow.com/questions/322938/recommended-way-to-initialize-srand
 
@@ -73,7 +72,6 @@ static int prime = 257;
 
 unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
 {
-
     a=a-b;  a=a-c;  a=a^(c >> 13);
     b=b-c;  b=b-a;  b=b^(a << 8);
     c=c-a;  c=c-b;  c=c^(b >> 13);
@@ -83,7 +81,6 @@ unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
     a=a-b;  a=a-c;  a=a^(c >> 3);
     b=b-c;  b=b-a;  b=b^(a << 10);
     c=c-a;  c=c-b;  c=c^(b >> 15);
-   
     return c;
 }
 
@@ -120,34 +117,32 @@ int modular_exponentiation(int base,int exp,int mod)
 	t = threshold shares to recreate the number
 */
 int * split_number(int number,int n, int t) {
-	int *shares = malloc(sizeof(int)*n);
+	int *shares;// = malloc(sizeof(int)*n);
 	int coef[t];
 	int x,i;
+	shares = malloc(sizeof(int)*n);
 	coef[0] = number;
-
+	for (i = 1; i < t; ++i)
+	{
+	/* Generate random coefficients -- use arc4random if available */
+		coef[i] = rand() % (prime - 1);
+	}
+	for (x = 0; x < n; ++x)
+	{
+		
+		int y = coef[0];
+		/* Calculate the shares */
 		for (i = 1; i < t; ++i)
 		{
-		/* Generate random coefficients -- use arc4random if available */
-			coef[i] = rand() % (prime - 1);
+			int temp = modular_exponentiation(x+1, i, prime);
+			y = (y + (coef[i] * temp % prime)) % prime;
 		}
-		for (x = 0; x < n; ++x)
-		{
-			int y = coef[0];
-			/* Calculate the shares */
-			for (i = 1; i < t; ++i)
-			{
-				int temp = modular_exponentiation(x+1, i, prime);
+		/* Sometimes we're getting negative numbers, and need to fix that */
+		y = (y + prime) % prime;
+		shares[x] = y;
+	}
+	return shares;  
 
-				y = (y + (coef[i] * temp % prime)) % prime;
-			}
-
-			/* Sometimes we're getting negative numbers, and need to fix that */
-			y = (y + prime) % prime;
-
-			shares[x] = y;
-		}
-		return shares;  
-	
 }
 
 
@@ -234,6 +229,7 @@ int join_shares(int *xy_pairs, int n) {
 	long value;
 	int i;
 	int j;
+
 	for (i = 0; i < n; ++i)
 	{
 		numerator = 1;
@@ -250,7 +246,6 @@ int join_shares(int *xy_pairs, int n) {
 		}
 
 		value = xy_pairs[i * 2 + 1];
-
 		secret = (secret + (value * numerator * modInverse(denominator))) % prime;
 	
 	}
@@ -301,8 +296,8 @@ void Test_join_shares(CuTest* tc) {
 char ** split_string(char * secret, int n, int t) {
 	char **shares = malloc(sizeof(char *) * n);
 	int len = strlen(secret);
-
 	int i;
+{
 	for (i = 0; i < n; ++i)
 	{
 		/* need two characters to encode each character */
@@ -315,9 +310,8 @@ char ** split_string(char * secret, int n, int t) {
 
 		sprintf(shares[i], "%02X%02XAA",(i+1),t);
 	}
-
 	/* Now, handle the secret */
-
+	
 	for (i = 0; i < len; ++i)
 	{
 		// fprintf(stderr, "char %c: %d\n", secret[i], (unsigned char) secret[i]);
@@ -327,10 +321,8 @@ char ** split_string(char * secret, int n, int t) {
 			letter = 256 + letter;
 
 		//fprintf(stderr, "char: '%c' int: '%d'\n", secret[i], letter);
-
 		int * chunks = split_number(letter, n, t);
 		int j;
-
 		for (j = 0; j < n; ++j)
 		{
 			if (chunks[j] == 256) {
@@ -342,8 +334,7 @@ char ** split_string(char * secret, int n, int t) {
 
 		free(chunks);
 	}
-
-
+}
 	// fprintf(stderr, "%s\n", secret);
 	return shares;
 }
@@ -376,7 +367,6 @@ char * join_strings(char ** shares, int n) {
 	int x[n];
 	int i;
 	int j;
-
 	for (i = 0; i < n; ++i)
 	{
 		codon[0] = shares[i][0];
@@ -384,11 +374,9 @@ char * join_strings(char ** shares, int n) {
 
 		x[i] = strtol(codon, NULL, 16);
 	}
-
 	for (i = 0; i < len; ++i)
 	{
 		int *chunks = malloc(sizeof(int) * n  * 2);
-
 		for (j = 0; j < n; ++j)
 		{
 			chunks[j*2] = x[j];
@@ -412,7 +400,6 @@ char * join_strings(char ** shares, int n) {
 
 		sprintf(result + i, "%c",letter);
 	}
-
 	return result;
 }
 
@@ -453,13 +440,15 @@ void Test_split_string(CuTest* tc) {
 */
 
 char * generate_share_strings(char * secret, int n, int t) {
-	char ** result = split_string(secret, n, t);
-	
+	char **result;
+	result = split_string(secret, n, t);
+
 	int len = strlen(secret);
 	int key_len = 6 + 2 * len + 1;
 	int i;
 
 	char * shares = malloc(key_len * n + 1);
+	
 	for (i = 0; i < n; ++i)
 	{
 		sprintf(shares + i * key_len, "%s\n", result[i]);
