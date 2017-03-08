@@ -90,8 +90,8 @@ unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
 void seed_random(void) {
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-	unsigned long seed = mix(clock(), time(NULL), rank);
-	srand(seed);
+    unsigned long seed = mix(omp_get_wtime(), time(NULL), rank);
+    srand(seed);
 }
 
 /*
