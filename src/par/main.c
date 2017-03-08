@@ -65,7 +65,6 @@ int main( int argc, char** argv ) {
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-//    double shares_time, decrypt_time;	
 	seed_random();
 	if (argc == 4) {
 		// Create shares -- "secret"  n  t 
@@ -76,12 +75,11 @@ int main( int argc, char** argv ) {
 		int n = atoi(argv[2]);
 
 		int t = atoi(argv[3]);
-		//shares_time = omp_get_wtime();
+		
 		START_TIMER(shares_time);
 		char * shares = generate_share_strings(secret, n, t);
 		STOP_TIMER(shares_time);
-		//shares_time = omp_get_wtime() - shares_time;
-        if (rank == 0){
+        	if (rank == 0){
 		    //fprintf(stdout, "%s", shares);
 		   fprintf(fp,"%s\n",shares);
 		   printf("Shares Gen Time: %8.4fs\n",GET_TIMER(shares_time));	
@@ -97,11 +95,10 @@ int main( int argc, char** argv ) {
 		int t = atoi(argv[2]);
 		FILE *fp;
 		fp = fopen("keys.txt","w");
-		//shares_time = omp_get_wtime();
+		
 		START_TIMER(shares_time);
 		char * shares = generate_share_strings(secret, n, t);
 		STOP_TIMER(shares_time);
-		//shares_time = omp_get_wtime() - shares_time;
 		if (rank == 0){
             		//fprintf(stdout, "%s\n", shares);
 
@@ -115,10 +112,9 @@ int main( int argc, char** argv ) {
 	} else {
 		// Read shares from stdin -- < shares.txt
 		char * shares = stdin_buffer();
-		//decrypt_time = omp_get_wtime();
+		
 		START_TIMER(decrypt_time);
 		char * secret = extract_secret_from_share_strings(shares);
-	//	decrypt_time = omp_get_wtime() - decrypt_time;
 		STOP_TIMER(decrypt_time);
 		if (rank == 0){
             		fprintf(stdout, "%s\n", secret);
@@ -128,9 +124,7 @@ int main( int argc, char** argv ) {
 
 		free(shares);
 	}
-	//printf("Share time: %.4f   Decrypt time: %.4f\n",
-	//	shares_gen,decrypt);
-    MPI_Finalize();
+   	 MPI_Finalize();
 	return EXIT_SUCCESS;
 
 }
