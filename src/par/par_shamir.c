@@ -60,6 +60,7 @@
 #include <mpi.h>
 #include "par_shamir.h"
 
+int nprocs;
 int num_threads=1;
 static int prime = 257;
 /*
@@ -122,14 +123,27 @@ int * split_number(int number,int n, int t) {
 	int x,i;
 	shares = malloc(sizeof(int)*n);
 	coef[0] = number;
+    MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
+    int local_coef[t / nprocs];
+
 #	pragma omp parallel shared(prime,t,coef,shares) private(number,x,i) 
 {
+    num_threads = omp_get_num_threads();
 #	pragma omp for
 	for (i = 1; i < t; ++i)
 	{
 	/* Generate random coefficients */
 		coef[i] = rand() % (prime - 1);
 	}
+//    printf("Here I am\n");
+//    for (i = 0; i < ((t / nprocs) - 1); ++i)
+//    {
+//        local_coef[i] = rand() % (prime - 1);
+//    }
+//    printf("Here I am before gathering\n");
+//    MPI_Gather(local_coef, (t / nprocs), MPI_INT, 
+ //              coef, (t / nprocs), MPI_INT, 0, MPI_COMM_WORLD);
+  //  printf("Here I am again\n");
 #	pragma omp for
 	for (x = 0; x < n; ++x)
 	{
