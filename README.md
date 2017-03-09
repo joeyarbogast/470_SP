@@ -36,7 +36,7 @@ Makefiles included for both parallel and serial versions in their respective dir
 
 **Parallel Strong Scaling Test**
 
-![Strong Scaling Chart](https://raw.github.com/arbogajk/470_SP/blob/master/StrongScaleTestingChart.png)
+![Strong Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/StrongScaleTestingChart.png)
 
 
 
