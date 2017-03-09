@@ -122,11 +122,15 @@ int * split_number(int number,int n, int t) {
 	int x,i;
 	shares = malloc(sizeof(int)*n);
 	coef[0] = number;
+#	pragma omp parallel shared(prime,t,coef,shares) private(number,x,i) 
+{
+#	pragma omp for
 	for (i = 1; i < t; ++i)
 	{
-	/* Generate random coefficients -- use arc4random if available */
+	/* Generate random coefficients */
 		coef[i] = rand() % (prime - 1);
 	}
+#	pragma omp for
 	for (x = 0; x < n; ++x)
 	{
 		
@@ -141,6 +145,7 @@ int * split_number(int number,int n, int t) {
 		y = (y + prime) % prime;
 		shares[x] = y;
 	}
+}
 	return shares;  
 
 }
@@ -314,7 +319,6 @@ char ** split_string(char * secret, int n, int t) {
 	{
 		// fprintf(stderr, "char %c: %d\n", secret[i], (unsigned char) secret[i]);
 		int letter = secret[i]; // - '0';
-
 		if (letter < 0)
 			letter = 256 + letter;
 
@@ -439,7 +443,6 @@ void Test_split_string(CuTest* tc) {
 char * generate_share_strings(char * secret, int n, int t) {
 	char **result;
 	result = split_string(secret, n, t);
-
 	int len = strlen(secret);
 	int key_len = 6 + 2 * len + 1;
 	int i;
