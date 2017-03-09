@@ -248,7 +248,6 @@ int join_shares(int *xy_pairs, int n) {
 	long value;
 	int i;
 	int j;
-
 	for (i = 0; i < n; ++i)
 	{
 		numerator = 1;
@@ -266,9 +265,8 @@ int join_shares(int *xy_pairs, int n) {
 
 		value = xy_pairs[i * 2 + 1];
 		secret = (secret + (value * numerator * modInverse(denominator))) % prime;
-	
 	}
-	
+
 	/* Sometimes we're getting negative numbers, and need to fix that */
 	secret = (secret + prime) % prime;
 	return secret;
@@ -382,6 +380,8 @@ char * join_strings(char ** shares, int n) {
 	int x[n];
 	int i;
 	int j;
+//#	pragma omp parallel default(none) shared(n,len,result,shares) private(codon,x,i,j)
+//{
 	for (i = 0; i < n; ++i)
 	{
 		codon[0] = shares[i][0];
@@ -389,6 +389,7 @@ char * join_strings(char ** shares, int n) {
 
 		x[i] = strtol(codon, NULL, 16);
 	}
+//#	pragma omp for
 	for (i = 0; i < len; ++i)
 	{
 		int *chunks = malloc(sizeof(int) * n  * 2);
@@ -415,6 +416,7 @@ char * join_strings(char ** shares, int n) {
 
 		sprintf(result + i, "%c",letter);
 	}
+//}
 	return result;
 }
 
@@ -460,7 +462,6 @@ char * generate_share_strings(char * secret, int n, int t) {
 	int len = strlen(secret);
 	int key_len = 6 + 2 * len + 1;
 	int i;
-
 	char * shares = malloc(key_len * n + 1);
 	for (i = 0; i < n; ++i)
 	{
@@ -506,7 +507,6 @@ char * extract_secret_from_share_strings(const char * string) {
 	char * share;
 	char * saveptr = NULL;
 	int i = 0;
-
 	/* strtok_rr modifies the string we are looking at, so make a temp copy */
 	char * temp_string = strdup(string);
 

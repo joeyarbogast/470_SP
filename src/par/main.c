@@ -32,12 +32,12 @@
 #include "GLibFacade.h"
 #ifdef _OPENMP
 #include <omp.h>
-#include "omp_timer.h"
 #endif
+#include "omp_timer.h"
 #include <mpi.h>
 #include "par_shamir.h"
-
 extern int num_threads;
+
 char * stdin_buffer() {
 	/* Read from stdin and return a char *
 		`result` will need to be freed elsewhere */
@@ -65,7 +65,9 @@ int main( int argc, char** argv ) {
     MPI_Init(&argc, &argv);
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
+#	ifdef _OPENMP
+	num_threads = omp_get_num_threads();
+#	endif	
 	seed_random();
 	if (argc == 4) {
 		// Create shares -- "secret"  n  t 
@@ -102,7 +104,7 @@ int main( int argc, char** argv ) {
             		//fprintf(stdout, "%s\n", shares);
 
 			fprintf(fp,"%s\n",shares);
-			printf("Threads: %d Gen Shares Time: %8.4fs\n",num_threads,GET_TIMER(shares_time));
+			printf("Threads: %2d Gen Shares Time: %8.4fs\n",num_threads,GET_TIMER(shares_time));
 		}
 
 		fclose(fp);
