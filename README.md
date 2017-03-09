@@ -1,5 +1,5 @@
 ## About ##
-
+|            |                           |	
 | ---------- | ------------------------- |
 | Title:     | Parallel Shamir's Secret Sharing Algorithm    |
 | Serial Version Author:    | Fletcher T. Penney       |
