@@ -25,16 +25,16 @@ Makefiles include for both parallel and serial version in their respective direc
 
 ## Current Performance Analysis ##
 
-All test conducted with maximum shares (255) and max unlock required(255)
+**All test conducted with maximum shares (255) and max unlock required(255)**
 	
-	**Serial version**
+**Serial version**
 
 |Char Cnt| Time |
 |:-------:|:-----:|
 |1080| 9.3400s|
 
 
-	**Parallel Strong Scaling Test**
+**Parallel Strong Scaling Test**
 
 | Threads | Char Cnt | Time    |
 |:-------:|:--------:|:-------:|
@@ -44,7 +44,7 @@ All test conducted with maximum shares (255) and max unlock required(255)
 | 8       | 1080     | 1.5576s |
 | 16      | 1080     | 1.0493s |
 
-	**Parallel Weak Scaling Test** 
+**Parallel Weak Scaling Test** 
 
 | Threads | Char Cnt | Time |
 |:-------:|:------:|:-----:|
@@ -60,7 +60,9 @@ Compile with Makefiles located in src/par and src/serial
 
 There is a tester script located in the src directory for testing scaling
 
-or an example using OpenMP for encrypting a text file from the *src* directory:
+or from the *src* directory:
+
+#### Exampe: ####
 
 	OMP_NUM_THREADS=8 srun par/par_shamir 255 255 < 1080CC.txt
 
@@ -75,6 +77,8 @@ There are included test files with varying character lengths specified by the nu
 text file name.  Use these as inputs into the program to test scaling.
 
 To decrypt: *Parallelization not implemented for this part yet*
+
+#### Example: ####
 
 	srun par/par_shamir < keys.txt
 
