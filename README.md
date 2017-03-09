@@ -10,13 +10,13 @@
 ## Introduction ##
 
 This is an implementation of [Shamir's Secret Sharing][shamir], taken from
-github user [fletcher] at https://github.com/fletcher/c-sss.
+github user [fletcher][https://github.com/fletcher/c-sss]
 
 We are working on the parallelization of fletcher's implementation and have successfully
-implemented parallel encryption using [OPENMP], without breaking the decryption. We are 
+implemented parallel encryption using OpenMP, without breaking the decryption. We are 
 seeing almost linear speed up times with encryption currently. 
 
-Compiled with fopenmp and also is setup to use mpi incase we find something that can
+Compiled with -fopenmp and also is setup to use mpi incase we find something that can
 be distributed.  
 
 Makefiles include for both parallel and serial version in their respective directories.
@@ -76,6 +76,21 @@ To decrypt: [Parallelization not implemented for this part yet]
 This reads the keys from `keys.txt` and uses them to decrypt the secret, 
 which is then output on stdout.
 
+
+## Project Status ##
+
+We have successfully parallelized the the split_number function using OpenMP directives.  Specifically
+we parallelized the random coefficient generation and have parallelized the for loop that calculates
+the shares.  Other attempts at parallelizing join_shares, split_string, join_strings generate_share_strings
+and extract_secret have proven to be ineffective and break encryption or decryption.
+
+### TODOs ###
+
+* Need to implement parallelism with the decryption.
+* Experiment with scheduling and do a performance writeup on it
+* See if we can implement MPI in place of OpenMP directives or use MPI on a different 
+part of the program.
+* Make performance charts and include them in the repository.
 
 ## The Shares ##
 From Fletcher:
