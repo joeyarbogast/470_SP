@@ -10,11 +10,11 @@
 ## Introduction ##
 
 This is an implementation of [Shamir's Secret Sharing][shamir], taken from
-github user [fletcher][https://github.com/fletcher/c-sss]
+github user [fletcher](https://github.com/fletcher/c-sss)
 
 We are working on the parallelization of Fletcher's implementation of Shamir's 
 Secret Sharing Algorithm as part of a course project in CS 470: Parallel and Distributed Systems
-at [James Madison University][https://w3.cs.jmu.edu/lam2mo/cs470_2017_01/]. We have successfully
+at [James Madison University](https://w3.cs.jmu.edu/lam2mo/cs470_2017_01/). We have successfully
 implemented parallel encryption using OpenMP, without breaking the decryption. We are 
 seeing linear speed up times with encryption currently. 
 
@@ -27,14 +27,15 @@ Makefiles include for both parallel and serial version in their respective direc
 
 All test conducted with maximum shares (255) and max unlock required(255)
 	
-	*Serial version*
+	**Serial version**
 
 |Char Cnt| Time |
 |:-------:|:-----:|
 |1080| 9.3400s|
 
 
-	*Parallel Strong Scaling Test*
+	**Parallel Strong Scaling Test**
+
 | Threads | Char Cnt | Time    |
 |:-------:|:--------:|:-------:|
 | 1       | 1080     | 9.3332s |
@@ -43,7 +44,8 @@ All test conducted with maximum shares (255) and max unlock required(255)
 | 8       | 1080     | 1.5576s |
 | 16      | 1080     | 1.0493s |
 
-	*Parallel Weak Scaling Test*      
+	**Parallel Weak Scaling Test** 
+
 | Threads | Char Cnt | Time |
 |:-------:|:------:|:-----:|
 | 1       | 540      | 4.6713s|
@@ -67,12 +69,12 @@ This will encrypt the text file string and generate 255 shares, all 255 of which
 to unlock the secret.  The key shares generated are written to `keys.txt`.  This file should
 immediately be separated, since all of the keys together can be used to decrypt the secret.
 
-*DO NOT GO OVER 255 FOR EITHER SHARES OR REQUIRED UNLOCK(causes seg faults)*
+**DO NOT GO OVER 255 FOR EITHER SHARES OR REQUIRED UNLOCK(causes seg faults)**
 
 There are included test files with varying character lengths specified by the number in the 
 text file name.  Use these as inputs into the program to test scaling.
 
-To decrypt: [Parallelization not implemented for this part yet]
+To decrypt: *Parallelization not implemented for this part yet*
 
 	srun par/par_shamir < keys.txt
 
@@ -85,8 +87,8 @@ which is then output on stdout.
 
 We have successfully parallelized the the split_number function using OpenMP directives.  Specifically
 we parallelized the random coefficient generation and have parallelized the for loop that calculates
-the shares.  Other attempts at parallelizing join_shares, split_string, join_strings generate_share_strings
-and extract_secret have proven to be ineffective and break encryption or decryption.
+the shares.  Other attempts at parallelizing `join_shares`, `split_string`, `join_strings`, 
+`generate_share_strings` and `extract_secret` have proven to be ineffective and break encryption or decryption.
 
 ### TODOs ###
 
@@ -97,7 +99,7 @@ part of the program.
 * Make performance charts and include them in the repository.
 
 ## The Shares ##
-*From Fletcher github page:*
+**From Fletcher github page:**
 
 Each share looks like this:
 
@@ -115,7 +117,7 @@ any of your information over the internet, but that may or may not be true.
 
 
 ## Security Issues ##
-*Fletcher:*
+**Fletcher:**
 
 I am not a cryptologist.  From what I can gather from the internet, Shamir's
 algorithm is secure -- without a sufficient number of shares, you cannot
