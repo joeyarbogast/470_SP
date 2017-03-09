@@ -52,6 +52,8 @@ Makefiles included for both parallel and serial versions in their respective dir
 
 **Parallel Weak Scaling Test** 
 
+![Weak Scaling Test Chart](https:/github.com/arbogajk/470_SP/blob/master/WeakScaleTestingChart.png)
+
 | Threads | Char Cnt | Time |
 |:-------:|:------:|:-----:|
 | 1       | 540      | 4.6713s|
