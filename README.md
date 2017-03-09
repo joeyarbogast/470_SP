@@ -12,9 +12,11 @@
 This is an implementation of [Shamir's Secret Sharing][shamir], taken from
 github user [fletcher][https://github.com/fletcher/c-sss]
 
-We are working on the parallelization of fletcher's implementation and have successfully
+We are working on the parallelization of Fletcher's implementation of Shamir's 
+Secret Sharing Algorithm as part of a course project in CS 470: Parallel and Distributed Systems
+at [James Madison University][https://w3.cs.jmu.edu/lam2mo/cs470_2017_01/]. We have successfully
 implemented parallel encryption using OpenMP, without breaking the decryption. We are 
-seeing almost linear speed up times with encryption currently. 
+seeing linear speed up times with encryption currently. 
 
 Compiled with -fopenmp and also is setup to use mpi incase we find something that can
 be distributed.  
@@ -25,14 +27,14 @@ Makefiles include for both parallel and serial version in their respective direc
 
 All test conducted with maximum shares (255) and max unlock required(255)
 	
-	Serial version
+	*Serial version*
 
 |Char Cnt| Time |
 |:-------:|:-----:|
 |1080| 9.3400s|
 
 
-	Parallel Strong Scaling
+	*Parallel Strong Scaling Test*
 | Threads | Char Cnt | Time    |
 |:-------:|:--------:|:-------:|
 | 1       | 1080     | 9.3332s |
@@ -41,7 +43,7 @@ All test conducted with maximum shares (255) and max unlock required(255)
 | 8       | 1080     | 1.5576s |
 | 16      | 1080     | 1.0493s |
 
-	Parallel Weak Scaling      
+	*Parallel Weak Scaling Test*      
 | Threads | Char Cnt | Time |
 |:-------:|:------:|:-----:|
 | 1       | 540      | 4.6713s|
@@ -52,25 +54,27 @@ All test conducted with maximum shares (255) and max unlock required(255)
 
 ## Usage:  ##
 
+Compile with Makefiles located in src/par and src/serial 
+
 There is a tester script located in the src directory for testing scaling
 
-or an example using OpenMP for encrypting a text file:
+or an example using OpenMP for encrypting a text file from the *src* directory:
 
-	OMP_NUM_THREADS=8 ./par_shamir 255 255 < ../1080CC.txt
+	OMP_NUM_THREADS=8 srun par/par_shamir 255 255 < 1080CC.txt
 
 
 This will encrypt the text file string and generate 255 shares, all 255 of which are required 
 to unlock the secret.  The key shares generated are written to `keys.txt`.  This file should
 immediately be separated, since all of the keys together can be used to decrypt the secret.
 
-	DO NOT GO OVER 255 FOR EITHER SHARES OR REQUIRED UNLOCK(causes seg fault)
+*DO NOT GO OVER 255 FOR EITHER SHARES OR REQUIRED UNLOCK(causes seg faults)*
 
 There are included test files with varying character lengths specified by the number in the 
 text file name.  Use these as inputs into the program to test scaling.
 
 To decrypt: [Parallelization not implemented for this part yet]
 
-	./par_shamir < keys.txt
+	srun par/par_shamir < keys.txt
 
 
 This reads the keys from `keys.txt` and uses them to decrypt the secret, 
@@ -93,7 +97,8 @@ part of the program.
 * Make performance charts and include them in the repository.
 
 ## The Shares ##
-From Fletcher:
+*From Fletcher github page:*
+
 Each share looks like this:
 
 	0102AA05C0DF2BD6
@@ -110,7 +115,8 @@ any of your information over the internet, but that may or may not be true.
 
 
 ## Security Issues ##
-Fletcher:
+*Fletcher:*
+
 I am not a cryptologist.  From what I can gather from the internet, Shamir's
 algorithm is secure -- without a sufficient number of shares, you cannot
 "crack the code."  I *believe* that I have implemented the algorithm correctly,
