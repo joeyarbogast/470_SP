@@ -1,6 +1,5 @@
 ## About ##
 
-|            |                           |
 | ---------- | ------------------------- |
 | Title:     | Parallel Shamir's Secret Sharing Algorithm    |
 | Serial Version Author:    | Fletcher T. Penney       |
@@ -24,17 +23,18 @@ Makefiles include for both parallel and serial version in their respective direc
 
 ## Usage:  ##
 
-There is a tester script located in the src directory for testing scaling.
-or an example using OpenMP for encrypting a text file.
+There is a tester script located in the src directory for testing scaling
 
-OMP_NUM_THREADS=8 ./par_shamir 255 255 < ../1080CC.txt
+or an example using OpenMP for encrypting a text file:
+
+	OMP_NUM_THREADS=8 ./par_shamir 255 255 < ../1080CC.txt
 
 
 This will encrypt the text file string and generate 255 shares, all 255 of which are required 
 to unlock the secret.  The key shares generated are written to `keys.txt`.  This file should
 immediately be separated, since all of the keys together can be used to decrypt the secret.
 
-DO NOT GO OVER 255 FOR EITHER SHARES OR REQUIRED UNLOCK(causes seg fault)
+	DO NOT GO OVER 255 FOR EITHER SHARES OR REQUIRED UNLOCK(causes seg fault)
 
 There are included test files with varying character lengths specified by the number in the 
 text file name.  Use these as inputs into the program to test scaling.
