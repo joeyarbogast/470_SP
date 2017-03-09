@@ -22,6 +22,7 @@ be distributed.
 Makefiles include for both parallel and serial version in their respective directories.
 
 ## Current Performance Analysis ##
+All test conducted with maximum shares (255) and max unlock required(255)
 	Serial version
 |Char Cnt| Time |
 |:-------:|:-----:|
