@@ -27,8 +27,8 @@ Makefiles include for both parallel and serial version in their respective direc
 |Char Count| Time   |
 |1080      | 9.3400s |
 
-|      |Parallel Version Strong Scaling|       |       |
-|------|----------------|-------|-------|
+|      |Parallel Version Strong Scaling|       |
+|------|----------------|-------|
 | Threads | Char Cnt | Time    |
 | 1       | 1080     | 9.3332s |
 | 2       | 1080     | 4.7888s |
