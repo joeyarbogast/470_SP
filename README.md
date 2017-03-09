@@ -36,6 +36,12 @@ Makefiles included for both parallel and serial versions in their respective dir
 
 **Parallel Strong Scaling Test**
 
+![Strong Scaling Chart](https://raw.github.com/arbogajk/470_SP/StrongScaleTestingChart.png)
+
+
+
+
+
 | Threads | Char Cnt | Time    |
 |:-------:|:--------:|:-------:|
 | 1       | 1080     | 9.3332s |
