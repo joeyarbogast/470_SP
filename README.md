@@ -21,7 +21,7 @@ seeing linear speed up times with encryption currently.
 Compiled with -fopenmp and also is setup to use mpi incase we find something that can
 be distributed.  
 
-Makefiles include for both parallel and serial version in their respective directories.
+Makefiles included for both parallel and serial versions in their respective directories.
 
 ## Current Performance Analysis ##
 
@@ -54,6 +54,12 @@ Makefiles include for both parallel and serial version in their respective direc
 | 8       | 4320     | 6.3220s|
 | 16      | 8640     | 8.3774s|
 
+### Scheduled For Loops Analysis ###
+
+|Threads | Scheduling | Char Cnt | Time |
+|:------:|:----------:|:--------:|:----:|
+|        |            |          |      |
+
 ## Usage:  ##
 
 Compile with Makefiles located in src/par and src/serial 
@@ -62,7 +68,7 @@ There is a tester script located in the src directory for testing scaling
 
 or from the *src* directory:
 
-#### Exampe: ####
+#### Example: ####
 
 	OMP_NUM_THREADS=8 srun par/par_shamir 255 255 < 1080CC.txt
 
