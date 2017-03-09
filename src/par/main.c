@@ -37,7 +37,7 @@
 #include <mpi.h>
 #include "par_shamir.h"
 
-
+extern int num_threads;
 char * stdin_buffer() {
 	/* Read from stdin and return a char *
 		`result` will need to be freed elsewhere */
@@ -82,7 +82,7 @@ int main( int argc, char** argv ) {
         	if (rank == 0){
 		    //fprintf(stdout, "%s", shares);
 		   fprintf(fp,"%s\n",shares);
-		   printf("Shares Gen Time: %8.4fs\n",GET_TIMER(shares_time));	
+		   printf("Threads: %d Gen Shares Time: %8.4fs\n",num_threads,GET_TIMER(shares_time));	
 		}
 		fclose(fp);
 		free(shares);
@@ -102,7 +102,7 @@ int main( int argc, char** argv ) {
             		//fprintf(stdout, "%s\n", shares);
 
 			fprintf(fp,"%s\n",shares);
-			printf("Shares Gen Time: %8.4fs\n",GET_TIMER(shares_time));
+			printf("Threads: %d Gen Shares Time: %8.4fs\n",num_threads,GET_TIMER(shares_time));
 		}
 
 		fclose(fp);
@@ -117,7 +117,7 @@ int main( int argc, char** argv ) {
 		STOP_TIMER(decrypt_time);
 		if (rank == 0){
             		fprintf(stdout, "%s\n", secret);
-			printf("Decrypt Time: %8.4fs\n",GET_TIMER(decrypt_time));
+			printf("Threads: %d Decrypt Time: %8.4fs\n",num_threads,GET_TIMER(decrypt_time));
 		}
 		free(secret);
 
