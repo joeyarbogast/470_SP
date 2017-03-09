@@ -2,67 +2,54 @@
 
 |            |                           |
 | ---------- | ------------------------- |
-| Title:     | c-SSS        |
-| Author:    | Fletcher T. Penney       |
-| Date:      | 2015-06-29 |
-| Copyright: | Copyright © 2015 Fletcher T. Penney.    |
-| Version:   | 0.2.0      |
-| Parallel Version: 1.0	| Joey Arbogast, Isaac Sumner	|
-
+| Title:     | Parallel Shamir's Secret Sharing Algorithm    |
+| Serial Version Author:    | Fletcher T. Penney       |
+| Date:      | 2017-03-01 |
+| Parallel Version Author's: | Joey Arbogast, Isaac Sumner	|
+| Version: |1.0|
 
 ## Introduction ##
 
-This is an implementation of [Shamir's Secret Sharing][shamir].  It was
-implemented in original c code, based on the javascript example from
-Wikipedia, with a couple of utility routines based on code elsewhere
-on the internet.
+This is an implementation of [Shamir's Secret Sharing][shamir], taken from
+github user [fletcher] at https://github.com/fletcher/c-sss.
 
-As long as it's compiled from source, and you verify the source, you can
-be confident that nothing nefarious is being done with your information.
+We are working on the parallelization of fletcher's implementation and have successfully
+implemented parallel encryption using [OPENMP], without breaking the decryption. We are 
+seeing almost linear speed up times with encryption currently. 
 
-The idea is that a secret string (e.g. a password, a secret note, etc.)
-is encoded and divided up into a specified number of shares (n). You also
-specify the threshold number of shares required to be able to reconstruct
-the original secret (t).
+Compiled with fopenmp and also is setup to use mpi incase we find something that can
+be distributed.  
 
-For example, you can split the secret into three shares, but require only
-two of them to recreate the secret.  This means that if one of the shares
-is lost, or otherwise unavailable, the secret can still be recovered. One
-of the shares, without either of the other two, is useless.
+Makefiles include for both parallel and serial version in their respective directories.
 
-This means that if someone gains access to one, but not two, of the shares,
-they cannot recover any information about the information that was
-encrypted.
+## Usage:  ##
+
+There is a tester script located in the src directory for testing scaling.
+or an example using OpenMP for encrypting a text file.
+
+OMP_NUM_THREADS=8 ./par_shamir 255 255 < ../1080CC.txt
 
 
-## How is it used? ##
+This will encrypt the text file string and generate 255 shares, all 255 of which are required 
+to unlock the secret.  The key shares generated are written to `keys.txt`.  This file should
+immediately be separated, since all of the keys together can be used to decrypt the secret.
 
-You have a few options:
+DO NOT GO OVER 255 FOR EITHER SHARES OR REQUIRED UNLOCK(causes seg fault)
 
-	./shamir "Some secret to be encrypted" 3 2 > all-keys.txt
+There are included test files with varying character lengths specified by the number in the 
+text file name.  Use these as inputs into the program to test scaling.
 
-This will encrypt the string and generate 3 shares, any 2 of which are required 
-to unlock the secret.  They are written to `all-keys.txt`.  This file should
-immediately be separated, since all of the keys together can be used to 
-decrypt the secret.
+To decrypt: [Parallelization not implemented for this part yet]
 
-	./shamir 3 2 < secret.txt
+	./par_shamir < keys.txt
 
-This pulls the secret from a text file
-
-
-The easiest way to unlock the information is to place the required keys in a
-text file, with each key on a line by itself.  Each key should be at the
-beginning of the line.
-
-	./shamir < keys.txt
 
 This reads the keys from `keys.txt` and uses them to decrypt the secret, 
 which is then output on stdout.
 
 
 ## The Shares ##
-
+From Fletcher:
 Each share looks like this:
 
 	0102AA05C0DF2BD6
@@ -78,22 +65,8 @@ I cannot vouch for the security of this website -- it claims not to send
 any of your information over the internet, but that may or may not be true.
 
 
-## About the Source ##
-
-This project was based on my [c-template] project.  It includes some boilerplate setup to make it easy to incorporate:
-
-* [cmake] for build configuration
-* [CuTest] for unit testing
-* [doxygen] for creating documentation from source files
-
-[c-template]:	https://github.com/fletcher/c-template
-[cmake]:	http://www.cmake.org/
-[CuTest]:	http://cutest.sourceforge.net
-[doxygen]:	http://www.stack.nl/~dimitri/doxygen/
-
-
 ## Security Issues ##
-
+Fletcher:
 I am not a cryptologist.  From what I can gather from the internet, Shamir's
 algorithm is secure -- without a sufficient number of shares, you cannot
 "crack the code."  I *believe* that I have implemented the algorithm correctly,
@@ -127,7 +100,7 @@ If you discover any problems with the program, please let me know!
 
 ## Source ##
 
-The source is available online:
+The serial source is available online:
 
 <https://github.com/fletcher/c-sss>
 
