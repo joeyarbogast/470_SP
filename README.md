@@ -36,9 +36,10 @@ Makefiles include for both parallel and serial version in their respective direc
 | 8       | 1080     | 1.5576s |
 | 16      | 1080     | 1.0493s |
 
-|     Parallel Weak Scaling|             
-|-----|---------------------|------|
+|     Parallel Weak Scaling      |
+|--------------------------------|             
 | Threads | Char Cnt | Time |
+|---------|----------|------|
 | 1       | 540      | 4.6713s|
 | 2       | 1080     | 4.7812s|
 | 4       | 2160     | 5.6829s|
