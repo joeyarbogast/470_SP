@@ -56,9 +56,36 @@ Makefiles included for both parallel and serial versions in their respective dir
 
 ### Scheduled For Loops Analysis ###
 
+##### First For Loop Only #####
+
 |Threads | Scheduling | Char Cnt | Time |
 |:------:|:----------:|:--------:|:----:|
-|        |            |          |      |
+|  8     |  (static,1) |1080    | 1.5799s |
+| 8       | (static,2) |1080 | 1.5689s|
+| 8     | static |  1080 |1.5714s|
+| 8     | dynamic| 1080 |1.5614s |
+| 8	|dynamic,1 | 1080 |1.5922s|
+| 8     | dynamic,2 | 1080 |1.5674s |
+| 8     | guided | 1080 |1.5684s|
+| 8    | **static,t-1** | 1080 |  1.4907s |
+| 8    | dynamic, t-1 | 1080 | 1.4998s | 
+
+##### Both For Loops (First loop scheduled static,t-1)  #####
+
+|Threads | Scheduling | Time |
+|:-----:|:-------------:|:-----:|
+| 8 | static |1.4900s | 
+| 8 | static,1 |1.4895s |
+| 8 |**static,2** |1.4890s |
+| 8 | static,n/num_threads |1.7474s |
+| 8 | dynamic | 1.4920s |
+| 8 | dynamic,1 | 1.4918s |
+| 8 | dynamic,2 |1.4898s|
+| 8 | dynamic,n /num_threads |1.7520s|  
+| 8 | guided | 1.4908s |
+
+
+
 
 ## Usage:  ##
 
