@@ -22,12 +22,12 @@ be distributed.
 Makefiles include for both parallel and serial version in their respective directories.
 
 ## Current Performance Analysis ##
-|      |Serial version|     
+|  Serial version|     
 |------|--------------|
 |Char Count| Time   |
 |1080      | 9.3400s |
 
-|      |Parallel Version Strong Scaling|       |
+|    Parallel Strong Scaling      |
 |------|----------------|-------|
 | Threads | Char Cnt | Time    |
 | 1       | 1080     | 9.3332s |
@@ -36,7 +36,7 @@ Makefiles include for both parallel and serial version in their respective direc
 | 8       | 1080     | 1.5576s |
 | 16      | 1080     | 1.0493s |
 
-|     |Parallel Weak Scaling|      |       
+|     Parallel Weak Scaling|             
 |-----|---------------------|------|
 | Threads | Char Cnt | Time |
 | 1       | 540      | 4.6713s|
