@@ -27,14 +27,14 @@ Makefiles included for both parallel and serial versions in their respective dir
 
 **All test conducted with maximum shares (255) and max unlock required(255)**
 	
-**Serial version**
+#####                 Serial version #####
 
 |Char Cnt| Time |
 |:-------:|:-----:|
 |1080| 9.3400s|
 
 
-**Parallel Strong Scaling Test**
+#####               Parallel Strong Scaling Test #####
 
 ![Strong Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/StrongScaleTestingChart.png)
 
@@ -50,7 +50,7 @@ Makefiles included for both parallel and serial versions in their respective dir
 | 8       | 1080     | 1.5576s |
 | 16      | 1080     | 1.0493s |
 
-**Parallel Weak Scaling Test** 
+#####                Parallel Weak Scaling Test #####
 
 ![Weak Scaling Test Chart](https://github.com/arbogajk/470_SP/blob/master/WeakScaleTestingChart.png)
 
@@ -101,7 +101,12 @@ Compile with Makefiles located in src/par and src/serial
 
 There is a tester script located in the src directory for testing scaling
 
-or from the *src* directory:
+To use tester script:
+	
+	./test_script.sh 255 255 1080CC.txt
+
+**OR**
+from the *src* directory:
 
 #### Example: ####
 
