@@ -129,7 +129,7 @@ int * split_number(int number,int n, int t) {
 #	pragma omp parallel shared(prime,t,coef,shares) private(number,x,i) 
 {
     num_threads = omp_get_num_threads();
-#	pragma omp for schedule(static,(t-1))
+#	pragma omp for schedule(dynamic,(t-1))
 	for (i = 1; i < t; ++i)
 	{
 	/* Generate random coefficients */
