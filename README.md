@@ -27,14 +27,20 @@ Makefiles included for both parallel and serial versions in their respective dir
 
 **All test conducted with maximum shares (255) and max unlock required(255)**
 	
-**Serial version**
+#####                 Serial version #####
 
 |Char Cnt| Time |
 |:-------:|:-----:|
 |1080| 9.3400s|
 
 
-**Parallel Strong Scaling Test**
+#####               Parallel Strong Scaling Test #####
+
+![Strong Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/StrongScaleTestingChart.png)
+
+
+
+
 
 | Threads | Char Cnt | Time    |
 |:-------:|:--------:|:-------:|
@@ -44,7 +50,9 @@ Makefiles included for both parallel and serial versions in their respective dir
 | 8       | 1080     | 1.5576s |
 | 16      | 1080     | 1.0493s |
 
-**Parallel Weak Scaling Test** 
+#####                Parallel Weak Scaling Test #####
+
+![Weak Scaling Test Chart](https://github.com/arbogajk/470_SP/blob/master/WeakScaleTestingChart.png)
 
 | Threads | Char Cnt | Time |
 |:-------:|:------:|:-----:|
@@ -56,9 +64,36 @@ Makefiles included for both parallel and serial versions in their respective dir
 
 ### Scheduled For Loops Analysis ###
 
+##### First For Loop Only #####
+
 |Threads | Scheduling | Char Cnt | Time |
 |:------:|:----------:|:--------:|:----:|
-|        |            |          |      |
+|  8     |  (static,1) |1080    | 1.5799s |
+| 8       | (static,2) |1080 | 1.5689s|
+| 8     | static |  1080 |1.5714s|
+| 8     | dynamic| 1080 |1.5614s |
+| 8	|dynamic,1 | 1080 |1.5922s|
+| 8     | dynamic,2 | 1080 |1.5674s |
+| 8     | guided | 1080 |1.5684s|
+| 8    | **static,t-1** | 1080 |  1.4907s |
+| 8    | dynamic, t-1 | 1080 | 1.4998s | 
+
+##### Both For Loops (First loop scheduled static,t-1)  #####
+
+|Threads | Scheduling | Time |
+|:-----:|:-------------:|:-----:|
+| 8 | static |1.4900s | 
+| 8 | static,1 |1.4895s |
+| 8 |**static,2** |1.4890s |
+| 8 | static,n/num_threads |1.7474s |
+| 8 | dynamic | 1.4920s |
+| 8 | dynamic,1 | 1.4918s |
+| 8 | dynamic,2 |1.4898s|
+| 8 | dynamic,n /num_threads |1.7520s|  
+| 8 | guided | 1.4908s |
+
+
+
 
 ## Usage:  ##
 
@@ -66,7 +101,12 @@ Compile with Makefiles located in src/par and src/serial
 
 There is a tester script located in the src directory for testing scaling
 
-or from the *src* directory:
+To use tester script:
+	
+	./test_script.sh 255 255 1080CC.txt
+
+**OR**
+from the *src* directory:
 
 #### Example: ####
 

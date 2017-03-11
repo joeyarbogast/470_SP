@@ -128,14 +128,23 @@ int * split_number(int number,int n, int t) {
 {
     num_threads = omp_get_num_threads();
 
-#	pragma omp for
+#	pragma omp for schedule(dynamic,(t-1))
 	for (i = 1; i < t; ++i)
 	{
 	/* Generate random coefficients */
 		coef[i] = rand() % (prime - 1);
 	}
 
-#	pragma omp for
+//    printf("Here I am\n");
+//    for (i = 0; i < ((t / nprocs) - 1); ++i)
+//    {
+//        local_coef[i] = rand() % (prime - 1);
+//    }
+//    printf("Here I am before gathering\n");
+//    MPI_Gather(local_coef, (t / nprocs), MPI_INT, 
+ //              coef, (t / nprocs), MPI_INT, 0, MPI_COMM_WORLD);
+  //  printf("Here I am again\n");
+#	pragma omp for schedule(static,2)
 	for (x = 0; x < n; ++x)
 	{
 		
