@@ -248,9 +248,10 @@ int join_shares(int *xy_pairs, int n) {
 	long value;
 	int i;
 	int j;
-#	pragma omp parallel default(none) shared(secret,n,prime,startposition,xy_pairs) private(numerator,denominator,nextposition,value,i,j)
+#	pragma omp parallel default(none) shared(secret,n,prime,xy_pairs) \
+		private(numerator,denominator,value,startposition,nextposition,i,j)
 {
-#	pragma omp for
+#pragma omp for
 	for (i = 0; i < n; ++i)
 	{
 		numerator = 1;
@@ -267,11 +268,13 @@ int join_shares(int *xy_pairs, int n) {
 		}
 
 		value = xy_pairs[i * 2 + 1];
+#	pragma omp critical		
 		secret = (secret + (value * numerator * modInverse(denominator))) % prime;
 	}
 }
 	/* Sometimes we're getting negative numbers, and need to fix that */
 	secret = (secret + prime) % prime;
+
 	return secret;
 }
 

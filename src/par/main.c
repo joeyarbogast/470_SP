@@ -117,7 +117,7 @@ int main( int argc, char** argv ) {
 		STOP_TIMER(decrypt_time);
 		if (rank == 0){
             		fprintf(stdout, "%s\n", secret);
-			printf("Threads: %d Decrypt Time: %8.4fs\n",num_threads,GET_TIMER(decrypt_time));
+			printf("Threads: %2d Decrypt Time: %8.4fs\n",num_threads,GET_TIMER(decrypt_time));
 		}
 		free(secret);
 
