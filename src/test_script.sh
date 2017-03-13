@@ -7,19 +7,25 @@ then
 fi
 
 echo "***********Serial Encryption*************"
-echo "Char Count: 1080 " 
+echo "Char Count: "  $3 
 srun serial/shamir $1 $2 < $3
+echo "Share Keys"
+sleep 1
+cat keys.txt
 echo "*********Serial Decryption **********"
 srun serial/shamir < keys.txt
 echo "**********Parallel ENCRYPTION  Strong ************"
 echo
-echo "Char Count: 1080"
+echo "Char Count: " $3
 OMP_NUM_THREADS=1 srun par/par_shamir $1 $2 < $3
 OMP_NUM_THREADS=2 srun par/par_shamir $1 $2 < $3
 OMP_NUM_THREADS=4 srun par/par_shamir $1 $2 < $3
 OMP_NUM_THREADS=8 srun par/par_shamir $1 $2 < $3
 OMP_NUM_THREADS=16 srun par/par_shamir $1 $2 < $3
 OMP_NUM_THREADS=32 srun par/par_shamir $1 $2 < $3
+echo "Share Keys"
+sleep 1
+cat keys.txt
 echo "*********Parallel Decryption Strong ***************"
 echo "Not running this until we have implemented it"
 echo "Testing decryption to make sure it works still"
