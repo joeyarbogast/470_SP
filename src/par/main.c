@@ -111,12 +111,15 @@ int main( int argc, char** argv ) {
 	} else {
 		// Read shares from stdin -- < shares.txt
 		char * shares = stdin_buffer();
-		
+		FILE *fp;
+		fp = fopen("decrypted_file.txt","w");		
 		START_TIMER(decrypt_time);
 		char * secret = extract_secret_from_share_strings(shares);
 		STOP_TIMER(decrypt_time);
+		
 		if (rank == 0){
-            		fprintf(stdout, "%s\n", secret);
+            	//	fprintf(stdout, "%s\n", secret);
+			fprintf(fp,"%s\n",secret);
 			printf("Threads: %2d Decrypt Time: %8.4fs\n",num_threads,GET_TIMER(decrypt_time));
 		}
 		free(secret);

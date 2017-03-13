@@ -248,9 +248,11 @@ int join_shares(int *xy_pairs, int n) {
 	long value;
 	int i;
 	int j;
-#	pragma omp parallel default(none) shared(secret,n,prime,xy_pairs) \
+
+#	pragma omp parallel default(none) shared(num_threads,secret,n,prime,xy_pairs) \
 		private(numerator,denominator,value,startposition,nextposition,i,j)
 {
+	num_threads=omp_get_num_threads();
 #pragma omp for
 	for (i = 0; i < n; ++i)
 	{
