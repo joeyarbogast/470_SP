@@ -322,6 +322,8 @@ char ** split_string(char * secret, int n, int t) {
 	char **shares = malloc(sizeof(char *) * n);
 	int len = strlen(secret);
 	int i;
+//This does work without breaking anything, but the speed up is not drastic(only minor)
+#	pragma omp parallel for default(none) shared(n,t,len,secret,shares) private(i)
 	for (i = 0; i < n; ++i)
 	{
 		/* need two characters to encode each character */
@@ -334,6 +336,8 @@ char ** split_string(char * secret, int n, int t) {
 
 		sprintf(shares[i], "%02X%02XAA",(i+1),t);
 	}
+	
+
 	/* Now, handle the secret */
 	for (i = 0; i < len; ++i)
 	{
@@ -356,6 +360,7 @@ char ** split_string(char * secret, int n, int t) {
 
 		free(chunks);
 	}
+
 	// fprintf(stderr, "%s\n", secret);
 	return shares;
 }
@@ -388,16 +393,12 @@ char * join_strings(char ** shares, int n) {
 	int x[n];
 	int i;
 	int j;
-//#	pragma omp parallel default(none) shared(n,len,result,shares) private(codon,x,i,j)
-//{
 	for (i = 0; i < n; ++i)
 	{
 		codon[0] = shares[i][0];
 		codon[1] = shares[i][1];
-
 		x[i] = strtol(codon, NULL, 16);
 	}
-//#	pragma omp for
 	for (i = 0; i < len; ++i)
 	{
 		int *chunks = malloc(sizeof(int) * n  * 2);
@@ -424,7 +425,6 @@ char * join_strings(char ** shares, int n) {
 
 		sprintf(result + i, "%c",letter);
 	}
-//}
 	return result;
 }
 
