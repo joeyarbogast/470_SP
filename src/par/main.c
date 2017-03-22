@@ -37,7 +37,8 @@
 #include <mpi.h>
 #include "par_shamir.h"
 extern int num_threads;
-
+int nprocs;
+int rank;
 char * stdin_buffer() {
 	/* Read from stdin and return a char *
 		`result` will need to be freed elsewhere */
@@ -63,9 +64,9 @@ int main( int argc, char** argv ) {
     
     // Initialize MPI stuff
     MPI_Init(&argc, &argv);
-    int rank;
+    //int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-	
+    MPI_Comm_size(MPI_COMM_WORLD,&nprocs);	
 	seed_random();
 	if (argc == 4) {
 		// Create shares -- "secret"  n  t 

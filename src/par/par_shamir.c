@@ -59,8 +59,8 @@
 #endif
 #include <mpi.h>
 #include "par_shamir.h"
-
-int nprocs;
+extern int rank;
+extern int nprocs;
 int num_threads=1;
 static int prime = 257;
 /*
@@ -86,7 +86,8 @@ unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
 }
 
 void seed_random(void) {
-    int rank;
+    //int rank;
+    MPI_Comm_size(MPI_COMM_WORLD,&nprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     unsigned long seed = mix(omp_get_wtime(), time(NULL), rank);
     srand(seed);
@@ -119,12 +120,17 @@ int modular_exponentiation(int base,int exp,int mod)
 */
 int * split_number(int number,int n, int t) {
 	int *shares;// = malloc(sizeof(int)*n);
-	int coef[t];
+	//int coef[t];
 	int x,i;
 	shares = malloc(sizeof(int)*n);
+	int *local_shares = malloc(sizeof(int)*n);
+	//coef[0] = number;
+	int *coef = (int *)malloc(sizeof(int *) * t);
+        int *local_coef = (int*)malloc(sizeof(int *) *t);
 	coef[0] = number;
-
-#	pragma omp parallel shared(prime,t,coef,shares) private(number,x,i) 
+		
+	
+#	pragma omp parallel shared(nprocs,prime,t,coef,shares) private(local_shares,local_coef,number,x,i) 
 {
     num_threads = omp_get_num_threads();
 
@@ -144,22 +150,27 @@ int * split_number(int number,int n, int t) {
 //    MPI_Gather(local_coef, (t / nprocs), MPI_INT, 
  //              coef, (t / nprocs), MPI_INT, 0, MPI_COMM_WORLD);
   //  printf("Here I am again\n");
+//#	pragma omp master
+//	MPI_Scatter(coef,t/nprocs,MPI_INT,local_coef,t/nprocs,MPI_INT,0,MPI_COMM_WORLD);
+	
 #	pragma omp for schedule(static,2)
 	for (x = 0; x < n; ++x)
 	{
-		
+		//int y = local_coef[0];
 		int y = coef[0];
 		/* Calculate the shares */
-		for (i = 1; i < t; ++i)
+		for (i = 1; i < t/nprocs; ++i)
 		{
 			int temp = modular_exponentiation(x+1, i, prime);
 			y = (y + (coef[i] * temp % prime)) % prime;
 		}
+		
 		/* Sometimes we're getting negative numbers, and need to fix that */
 		y = (y + prime) % prime;
 		shares[x] = y;
 	}
 }
+//	MPI_Gather(local_shares,n,MPI_INT,shares,n,MPI_INT,0,MPI_COMM_WORLD);
 	return shares;  
 
 }
@@ -248,12 +259,17 @@ int join_shares(int *xy_pairs, int n) {
 	long value;
 	int i;
 	int j;
+	int *local_xy_pairs = malloc(sizeof(int) * n * 2);
+	
+	
+	MPI_Bcast(xy_pairs,sizeof(xy_pairs), MPI_INT,0,MPI_COMM_WORLD);
 
-#	pragma omp parallel default(none) shared(num_threads,secret,n,prime,xy_pairs) \
+
+#	pragma omp parallel default(none) shared(num_threads,secret,n,prime,xy_pairs,local_xy_pairs) \
 		private(numerator,denominator,value,startposition,nextposition,i,j)
 {
 	num_threads=omp_get_num_threads();
-#pragma omp for
+#	pragma omp for
 	for (i = 0; i < n; ++i)
 	{
 		numerator = 1;
@@ -268,12 +284,13 @@ int join_shares(int *xy_pairs, int n) {
 				//fprintf(stderr, "Num: %lli\nDen: %lli\n", numerator, denominator);
 			}
 		}
-
-		value = xy_pairs[i * 2 + 1];
+		
+		value = xy_pairs[i *2 + 1];
 #	pragma omp critical		
 		secret = (secret + (value * numerator * modInverse(denominator))) % prime;
 	}
 }
+
 	/* Sometimes we're getting negative numbers, and need to fix that */
 	secret = (secret + prime) % prime;
 

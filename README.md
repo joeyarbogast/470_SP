@@ -137,16 +137,16 @@ which is then output on stdout.
 
 We have successfully parallelized the the split_number function using OpenMP directives.  Specifically
 we parallelized the random coefficient generation and have parallelized the for loop that calculates
-the shares.  Other attempts at parallelizing `join_shares`, `split_string`, `join_strings`, 
-`generate_share_strings` and `extract_secret` have proven to be ineffective and break encryption or decryption.
+the shares.  We just recently were able to parallelize the decryption and see linear scaling with it as well.  
+The challenge was figuring out which variables needed to be private.  
+To summarize which functions have been parallelize with OpenMp: `split_number` (part of encrypting files), and `join_shares`(decryption).,
 
 ### TODOs ###
 
-* Need to implement parallelism with the decryption.
 * Experiment with scheduling and do a performance writeup on it
-* See if we can implement MPI in place of OpenMP directives or use MPI on a different 
-part of the program.
-* Make performance charts and include them in the repository.
+* Integrate MPI in place of OpenMP directives or incorporate it into the 
+  existing OpenMP directives.
+* Make decryption performance charts and include them in the repository.
 
 ## The Shares ##
 **From Fletcher github page:**
