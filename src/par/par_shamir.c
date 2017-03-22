@@ -117,18 +117,18 @@ int modular_exponentiation(int base,int exp,int mod)
 	n = the number of shares
 	t = threshold shares to recreate the number
 */
-int * split_number(int number,int n, int t) {
+int * split_number(int number, int n, int t) {
 	int *shares;// = malloc(sizeof(int)*n);
 	int coef[t];
 	int x,i;
 	shares = malloc(sizeof(int)*n);
 	coef[0] = number;
 
-#	pragma omp parallel shared(prime,t,coef,shares) private(number,x,i) 
+#	pragma omp parallel shared(prime, t, coef, shares) private(number, x, i) 
 {
     num_threads = omp_get_num_threads();
 
-#	pragma omp for schedule(dynamic,(t-1))
+#	pragma omp for schedule(dynamic, (t - 1))
 	for (i = 1; i < t; ++i)
 	{
 	/* Generate random coefficients */
@@ -311,43 +311,64 @@ void Test_join_shares(CuTest* tc) {
 */
 
 char ** split_string(char * secret, int n, int t) {
-	char **shares = malloc(sizeof(char *) * n);
+    
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);    
+    char **shares = malloc(sizeof(char *) * n);
 	int len = strlen(secret);
-	int i;
-	for (i = 0; i < n; ++i)
-	{
+    int nprocs;
+	MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
+    char **loc_shares = malloc(sizeof(char *) * (n / nprocs));
+    int loc_len = len / nprocs;
+    char *loc_secret = malloc(sizeof(char) * loc_len);
+
+    int i;
+	//for (i = 0; i < n; ++i)
+	//{
 		/* need two characters to encode each character */
 		/* Need 4 character overhead for share # and quorum # */
 		/* Additional 2 characters are for compatibility with:
 		
 			http://www.christophedavid.org/w/c/w.php/Calculators/ShamirSecretSharing
 		*/
-		shares[i] = (char *) malloc(2*len + 6 + 1);
+	//	shares[i] = (char *) malloc(2 * len + 6 + 1);
 
-		sprintf(shares[i], "%02X%02XAA",(i+1),t);
-	}
-	/* Now, handle the secret */
-	for (i = 0; i < len; ++i)
+	//	sprintf(shares[i], "%02X%02XAA", (i+1), t);
+	//}
+    
+    for (i = 0; i < (n / nprocs); ++i)
+    {
+        loc_shares[i] = (char *)malloc(2 * len + 6 + 1);
+        sprintf(loc_shares[i], "%02X%02XAA", (i+1), t);
+    }
+    
+    /* Now, handle the secret */
+    MPI_Scatter(secret, loc_len, MPI_INT, loc_secret, 
+                loc_len, MPI_INT, 0, MPI_COMM_WORLD);
+	
+    for (i = 0; i < loc_len; ++i)
 	{
 		// fprintf(stderr, "char %c: %d\n", secret[i], (unsigned char) secret[i]);
-		int letter = secret[i]; // - '0';
+		int letter = loc_secret[i]; // - '0';
 		if (letter < 0)
 			letter = 256 + letter;
 
 		//fprintf(stderr, "char: '%c' int: '%d'\n", secret[i], letter);
 		int * chunks = split_number(letter, n, t);
 		int j;
-		for (j = 0; j < n; ++j)
+		for (j = 0; j < (n / nprocs); ++j)
 		{
 			if (chunks[j] == 256) {
-				sprintf(shares[j] + 6+ i * 2, "G0");	/* Fake code */
+				sprintf(loc_shares[j] + 6 + i * 2, "G0");	/* Fake code */
 			} else {
-				sprintf(shares[j] + 6 + i * 2, "%02X", chunks[j]);				
+				sprintf(loc_shares[j] + 6 + i * 2, "%02X", chunks[j]);				
 			}
 		}
 
 		free(chunks);
 	}
+    MPI_Gather(loc_shares, (n / nprocs), MPI_INT, shares, 
+               (n / nprocs), MPI_INT, 0, MPI_COMM_WORLD);
 	// fprintf(stderr, "%s\n", secret);
 	return shares;
 }
@@ -450,29 +471,29 @@ void Test_split_string(CuTest* tc) {
 }
 #endif
 
-
 /*
-	generate_share_strings() -- create a string of the list of the generated shares,
-		one per line
+        generate_share_strings() -- create a string of the list of the generated shares,
+                one per line
 */
 
 char * generate_share_strings(char * secret, int n, int t) {
-	char **result;
-	result = split_string(secret, n, t);
-	int len = strlen(secret);
-	int key_len = 6 + 2 * len + 1;
-	int i;
-	char * shares = malloc(key_len * n + 1);
-	for (i = 0; i < n; ++i)
-	{
-		sprintf(shares + i * key_len, "%s\n", result[i]);
-	}
+        char ** result = split_string(secret, n, t);
+        
+        int len = strlen(secret);
+        int key_len = 6 + 2 * len + 1;
+        int i;
+        printf("before looping\n");
+        char * shares = malloc(key_len * n + 1);
 
-	free_string_shares(result, n);
-	
-	return shares;
+        for (i = 0; i < n; ++i)
+        {
+            sprintf(shares + i * key_len, "%s\n", result[i]);
+        }
+        printf("after looping\n");
+        free_string_shares(result, n);
+
+        return shares;
 }
-
 
 /* Trim spaces at end of string */
 void trim_trailing_whitespace(char *str) {
