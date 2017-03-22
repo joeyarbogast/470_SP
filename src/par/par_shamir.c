@@ -120,17 +120,16 @@ int modular_exponentiation(int base,int exp,int mod)
 */
 int * split_number(int number,int n, int t) {
 	int *shares;// = malloc(sizeof(int)*n);
-	//int coef[t];
+	int coef[t];
 	int x,i;
 	shares = malloc(sizeof(int)*n);
-	int *local_shares = malloc(sizeof(int)*n);
-	//coef[0] = number;
-	int *coef = (int *)malloc(sizeof(int *) * t);
-        int *local_coef = (int*)malloc(sizeof(int *) *t);
+	//int *local_shares = malloc(sizeof(int)*n);
+	//int *coef = (int *)malloc(sizeof(int *) * t);
+        //int *local_coef = (int*)malloc(sizeof(int *) *t);
 	coef[0] = number;
 		
 	
-#	pragma omp parallel shared(nprocs,prime,t,coef,shares) private(local_shares,local_coef,number,x,i) 
+#	pragma omp parallel shared(nprocs,prime,t,coef,shares) private(number,x,i) 
 {
     num_threads = omp_get_num_threads();
 
@@ -259,13 +258,13 @@ int join_shares(int *xy_pairs, int n) {
 	long value;
 	int i;
 	int j;
-	int *local_xy_pairs = malloc(sizeof(int) * n * 2);
+	//int *local_xy_pairs = malloc(sizeof(int) * n * 2);
 	
 	
-	MPI_Bcast(xy_pairs,sizeof(xy_pairs), MPI_INT,0,MPI_COMM_WORLD);
+	//MPI_Bcast(xy_pairs,sizeof(xy_pairs), MPI_INT,0,MPI_COMM_WORLD);
 
 
-#	pragma omp parallel default(none) shared(num_threads,secret,n,prime,xy_pairs,local_xy_pairs) \
+#	pragma omp parallel default(none) shared(num_threads,secret,n,prime,xy_pairs) \
 		private(numerator,denominator,value,startposition,nextposition,i,j)
 {
 	num_threads=omp_get_num_threads();
