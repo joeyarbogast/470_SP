@@ -37,7 +37,8 @@
 #include <mpi.h>
 #include "par_shamir.h"
 extern int num_threads;
-
+int nprocs;
+int rank;
 char * stdin_buffer() {
 	/* Read from stdin and return a char *
 		`result` will need to be freed elsewhere */
@@ -63,9 +64,9 @@ int main( int argc, char** argv ) {
     
     // Initialize MPI stuff
     MPI_Init(&argc, &argv);
-    int rank;
+    //int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-	
+    MPI_Comm_size(MPI_COMM_WORLD,&nprocs);	
 	seed_random();
 	if (argc == 4) {
 		// Create shares -- "secret"  n  t 
@@ -111,13 +112,16 @@ int main( int argc, char** argv ) {
 	} else {
 		// Read shares from stdin -- < shares.txt
 		char * shares = stdin_buffer();
-		
+		FILE *fp;
+		fp = fopen("decrypted_file.txt","w");		
 		START_TIMER(decrypt_time);
 		char * secret = extract_secret_from_share_strings(shares);
 		STOP_TIMER(decrypt_time);
+		
 		if (rank == 0){
-            		fprintf(stdout, "%s\n", secret);
-			printf("Threads: %d Decrypt Time: %8.4fs\n",num_threads,GET_TIMER(decrypt_time));
+            	//	fprintf(stdout, "%s\n", secret);
+			fprintf(fp,"%s\n",secret);
+			printf("Threads: %2d Decrypt Time: %8.4fs\n",num_threads,GET_TIMER(decrypt_time));
 		}
 		free(secret);
 

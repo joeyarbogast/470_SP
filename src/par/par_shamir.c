@@ -59,8 +59,8 @@
 #endif
 #include <mpi.h>
 #include "par_shamir.h"
-
-int nprocs;
+extern int rank;
+extern int nprocs;
 int num_threads=1;
 static int prime = 257;
 /*
@@ -86,7 +86,8 @@ unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
 }
 
 void seed_random(void) {
-    int rank;
+    //int rank;
+    MPI_Comm_size(MPI_COMM_WORLD,&nprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     unsigned long seed = mix(omp_get_wtime(), time(NULL), rank);
     srand(seed);
@@ -122,9 +123,12 @@ int * split_number(int number, int n, int t) {
 	int coef[t];
 	int x,i;
 	shares = malloc(sizeof(int)*n);
+	//int *local_shares = malloc(sizeof(int)*n);
+	//int *coef = (int *)malloc(sizeof(int *) * t);
+        //int *local_coef = (int*)malloc(sizeof(int *) *t);
 	coef[0] = number;
-
-#	pragma omp parallel shared(prime, t, coef, shares) private(number, x, i) 
+	
+#	pragma omp parallel shared(nprocs,prime,t,coef,shares) private(number,x,i) 
 {
     num_threads = omp_get_num_threads();
 
@@ -144,10 +148,13 @@ int * split_number(int number, int n, int t) {
 //    MPI_Gather(local_coef, (t / nprocs), MPI_INT, 
  //              coef, (t / nprocs), MPI_INT, 0, MPI_COMM_WORLD);
   //  printf("Here I am again\n");
+//#	pragma omp master
+//	MPI_Scatter(coef,t/nprocs,MPI_INT,local_coef,t/nprocs,MPI_INT,0,MPI_COMM_WORLD);
+	
 #	pragma omp for schedule(static,2)
 	for (x = 0; x < n; ++x)
 	{
-		
+		//int y = local_coef[0];
 		int y = coef[0];
 		/* Calculate the shares */
 		for (i = 1; i < t; ++i)
@@ -155,11 +162,13 @@ int * split_number(int number, int n, int t) {
 			int temp = modular_exponentiation(x+1, i, prime);
 			y = (y + (coef[i] * temp % prime)) % prime;
 		}
+		
 		/* Sometimes we're getting negative numbers, and need to fix that */
 		y = (y + prime) % prime;
 		shares[x] = y;
 	}
 }
+//	MPI_Gather(local_shares,n,MPI_INT,shares,n,MPI_INT,0,MPI_COMM_WORLD);
 	return shares;  
 
 }
@@ -248,6 +257,17 @@ int join_shares(int *xy_pairs, int n) {
 	long value;
 	int i;
 	int j;
+	//int *local_xy_pairs = malloc(sizeof(int) * n * 2);
+	
+	
+	//MPI_Bcast(xy_pairs,sizeof(xy_pairs), MPI_INT,0,MPI_COMM_WORLD);
+
+
+#	pragma omp parallel default(none) shared(num_threads,secret,n,prime,xy_pairs) \
+		private(numerator,denominator,value,startposition,nextposition,i,j)
+{
+	num_threads=omp_get_num_threads();
+#	pragma omp for
 	for (i = 0; i < n; ++i)
 	{
 		numerator = 1;
@@ -262,13 +282,16 @@ int join_shares(int *xy_pairs, int n) {
 				//fprintf(stderr, "Num: %lli\nDen: %lli\n", numerator, denominator);
 			}
 		}
-
-		value = xy_pairs[i * 2 + 1];
+		
+		value = xy_pairs[i *2 + 1];
+#	pragma omp critical		
 		secret = (secret + (value * numerator * modInverse(denominator))) % prime;
 	}
+}
 
 	/* Sometimes we're getting negative numbers, and need to fix that */
 	secret = (secret + prime) % prime;
+
 	return secret;
 }
 
@@ -313,18 +336,22 @@ void Test_join_shares(CuTest* tc) {
 char ** split_string(char * secret, int n, int t) {
     
     int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);    
+    //MPI_Comm_rank(MPI_COMM_WORLD, &rank);    
     char **shares = malloc(sizeof(char *) * n);
 	int len = strlen(secret);
-    int nprocs;
-	MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
-    char **loc_shares = malloc(sizeof(char *) * (n / nprocs));
-    int loc_len = len / nprocs;
-    char *loc_secret = malloc(sizeof(char) * loc_len);
+	//MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
+    //char **loc_shares = malloc(sizeof(char *) * (n / nprocs));
+    //int loc_len = len / nprocs;
+    //char *loc_secret = malloc(sizeof(char) * loc_len);
 
-    int i;
+    //int i;
 	//for (i = 0; i < n; ++i)
 	//{
+	int i;
+//This does work without breaking anything, but the speed up is not drastic(only minor)
+#	pragma omp parallel for default(none) shared(n,t,len,secret,shares) private(i)
+	for (i = 0; i < n; ++i)
+	{
 		/* need two characters to encode each character */
 		/* Need 4 character overhead for share # and quorum # */
 		/* Additional 2 characters are for compatibility with:
@@ -336,39 +363,48 @@ char ** split_string(char * secret, int n, int t) {
 	//	sprintf(shares[i], "%02X%02XAA", (i+1), t);
 	//}
     
-    for (i = 0; i < (n / nprocs); ++i)
-    {
-        loc_shares[i] = (char *)malloc(2 * len + 6 + 1);
-        sprintf(loc_shares[i], "%02X%02XAA", (i+1), t);
-    }
+    //for (i = 0; i < (n / nprocs); ++i)
+    //{
+    //    loc_shares[i] = (char *)malloc(2 * len + 6 + 1);
+    //    sprintf(loc_shares[i], "%02X%02XAA", (i+1), t);
+    //}
     
     /* Now, handle the secret */
-    MPI_Scatter(secret, loc_len, MPI_INT, loc_secret, 
-                loc_len, MPI_INT, 0, MPI_COMM_WORLD);
+    //MPI_Scatter(secret, loc_len, MPI_INT, loc_secret, 
+    //            loc_len, MPI_INT, 0, MPI_COMM_WORLD);
 	
-    for (i = 0; i < loc_len; ++i)
+    //for (i = 0; i < loc_len; ++i)
+		shares[i] = (char *) malloc(2*len + 6 + 1);
+
+		sprintf(shares[i], "%02X%02XAA",(i+1),t);
+	}
+	
+
+	/* Now, handle the secret */
+	for (i = 0; i < len; ++i)
 	{
 		// fprintf(stderr, "char %c: %d\n", secret[i], (unsigned char) secret[i]);
-		int letter = loc_secret[i]; // - '0';
+		int letter = secret[i]; // - '0';
 		if (letter < 0)
 			letter = 256 + letter;
 
 		//fprintf(stderr, "char: '%c' int: '%d'\n", secret[i], letter);
 		int * chunks = split_number(letter, n, t);
 		int j;
-		for (j = 0; j < (n / nprocs); ++j)
+		for (j = 0; j < n; ++j)
 		{
 			if (chunks[j] == 256) {
-				sprintf(loc_shares[j] + 6 + i * 2, "G0");	/* Fake code */
+				sprintf(shares[j] + 6 + i * 2, "G0");	/* Fake code */
 			} else {
-				sprintf(loc_shares[j] + 6 + i * 2, "%02X", chunks[j]);				
+				sprintf(shares[j] + 6 + i * 2, "%02X", chunks[j]);				
 			}
 		}
 
 		free(chunks);
 	}
-    MPI_Gather(loc_shares, (n / nprocs), MPI_INT, shares, 
-               (n / nprocs), MPI_INT, 0, MPI_COMM_WORLD);
+    //MPI_Gather(loc_shares, (n / nprocs), MPI_INT, shares, 
+    //           (n / nprocs), MPI_INT, 0, MPI_COMM_WORLD);
+
 	// fprintf(stderr, "%s\n", secret);
 	return shares;
 }
@@ -401,16 +437,12 @@ char * join_strings(char ** shares, int n) {
 	int x[n];
 	int i;
 	int j;
-//#	pragma omp parallel default(none) shared(n,len,result,shares) private(codon,x,i,j)
-//{
 	for (i = 0; i < n; ++i)
 	{
 		codon[0] = shares[i][0];
 		codon[1] = shares[i][1];
-
 		x[i] = strtol(codon, NULL, 16);
 	}
-//#	pragma omp for
 	for (i = 0; i < len; ++i)
 	{
 		int *chunks = malloc(sizeof(int) * n  * 2);
@@ -437,7 +469,6 @@ char * join_strings(char ** shares, int n) {
 
 		sprintf(result + i, "%c",letter);
 	}
-//}
 	return result;
 }
 
