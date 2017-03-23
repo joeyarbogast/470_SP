@@ -23,6 +23,48 @@ be distributed.
 
 Makefiles included for both parallel and serial versions in their respective directories.
 
+
+## Usage:  ##
+
+Compile with Makefiles located in src/par and src/serial
+
+There is a tester script located in the src directory for testing scaling
+
+To use tester script:
+
+        ./test_script.sh 255 255 1080CC.txt
+
+**OR**
+from the *src* directory:
+
+#### Example: ####
+
+        OMP_NUM_THREADS=8 srun par/par_shamir 255 255 < 1080CC.txt
+
+
+This will encrypt the text file string and generate 255 shares, all 255 of which are required
+to unlock the secret.  The key shares generated are written to `keys.txt`.  This file should
+immediately be separated, since all of the keys together can be used to decrypt the secret.
+
+**DO NOT GO OVER 255 FOR EITHER SHARES OR REQUIRED UNLOCK(causes seg faults)**
+
+There are included test files with varying character lengths specified by the number in the
+text file name.  Use these as inputs into the program to test scaling.
+
+To decrypt: *Parallelization not implemented for this part yet*
+
+#### Example: ####
+
+        srun par/par_shamir < keys.txt
+
+
+This reads the keys from `keys.txt` and uses them to decrypt the secret,
+which is then output on stdout.
+
+
+
+
+
 ## Current Performance Analysis ##
 
 **All test conducted with maximum shares (255) and max unlock required(255)**
@@ -93,49 +135,38 @@ Makefiles included for both parallel and serial versions in their respective dir
 | 8 | guided | 1.4908s |
 
 
+## Decryption Scaling Test ##
+
+![Strong Scaling Decryption Test](https://github.com/arbogajk/470_SP/blob/master/1080-decryption.png)
+
+|Threads|Char Cnt | Time |
+|:------:|:-------:|:-------:|
+|1|1080| |1.6499|
+|2|1080|0.8492|
+|4|1080|0.5051|
+|8|1080|0.3247|
+|16|1080|0.3786|
 
 
-## Usage:  ##
+![Strong Scaling Decryption With 8640 Characters](https://github.com/arbogajk/470_SP/blob/master/8640-Decryption.png)
 
-Compile with Makefiles located in src/par and src/serial 
-
-There is a tester script located in the src directory for testing scaling
-
-To use tester script:
-	
-	./test_script.sh 255 255 1080CC.txt
-
-**OR**
-from the *src* directory:
-
-#### Example: ####
-
-	OMP_NUM_THREADS=8 srun par/par_shamir 255 255 < 1080CC.txt
+|Threads|Char Cnt| Time|
+|:------:|:-----:|:------:|
+|1|8640|13.6891 |
+|2| 8640|9.6236  |
+|4| 8640|4.1306  |
+|8| 8640| 2.6602 |
+|16| 8640|2.2889 |
 
 
-This will encrypt the text file string and generate 255 shares, all 255 of which are required 
-to unlock the secret.  The key shares generated are written to `keys.txt`.  This file should
-immediately be separated, since all of the keys together can be used to decrypt the secret.
-
-**DO NOT GO OVER 255 FOR EITHER SHARES OR REQUIRED UNLOCK(causes seg faults)**
-
-There are included test files with varying character lengths specified by the number in the 
-text file name.  Use these as inputs into the program to test scaling.
-
-To decrypt: *Parallelization not implemented for this part yet*
-
-#### Example: ####
-
-	srun par/par_shamir < keys.txt
 
 
-This reads the keys from `keys.txt` and uses them to decrypt the secret, 
-which is then output on stdout.
 
+ 
 
 ## Project Status ##
 
-We have successfully parallelized the the split_number function using OpenMP directives.  Specifically
+We have successfully parallelized the the `split_number` function using OpenMP directives.  Specifically
 we parallelized the random coefficient generation and have parallelized the for loop that calculates
 the shares.  We just recently were able to parallelize the decryption and see linear scaling with it as well.  
 The challenge was figuring out which variables needed to be private.  
@@ -149,7 +180,7 @@ To summarize which functions have been parallelize with OpenMp: `split_number` (
 * Make decryption performance charts and include them in the repository.
 
 ## The Shares ##
-**From Fletcher github page:**
+**From Fletcher's github page:**
 
 Each share looks like this:
 
