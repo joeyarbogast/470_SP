@@ -60,7 +60,7 @@ To run individual test see below.
 
 #### Example: ####
 
-        srun par/par_shamir < keys.txt
+	OMP_NUM_THREADS=4 srun par/par_shamir < keys.txt
 
 
 This reads the keys from `keys.txt` and uses them to decrypt the secret,
