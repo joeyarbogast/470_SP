@@ -26,7 +26,8 @@ Makefiles included for both parallel and serial versions in their respective dir
 
 ## Usage:  ##
 
-Compile with Makefiles located in src/par and src/serial
+Compile with make.sh script file.  This handles changing directories into serial and par directories
+and running their corresponding make files.
 
 There is a tester script located in the src directory for testing scaling
 
@@ -35,7 +36,8 @@ To use tester script:
         ./test_script.sh 255 255 1080CC.txt
 
 **OR**
-from the *src* directory:
+
+Running individual test:
 
 #### Example: ####
 
@@ -51,7 +53,10 @@ immediately be separated, since all of the keys together can be used to decrypt 
 There are included test files with varying character lengths specified by the number in the
 text file name.  Use these as inputs into the program to test scaling.
 
-To decrypt: *Parallelization not implemented for this part yet*
+### Decryption ###
+To decrypt input the keys.txt file into the program and it will generate the
+decrypted text file. The tester script handles this by doing a strong scaling test.
+To run individual test see below.
 
 #### Example: ####
 
@@ -59,7 +64,9 @@ To decrypt: *Parallelization not implemented for this part yet*
 
 
 This reads the keys from `keys.txt` and uses them to decrypt the secret,
-which is then output on stdout.
+which is then output on stdout.  The tester script also outputs the decrypted
+text file to a file called `decrypted_file.txt` for checking, but also prints
+to stdout while the program is running.
 
 
 
