@@ -334,7 +334,7 @@ void Test_join_shares(CuTest* tc) {
 
 char ** split_string(char * secret, int n, int t) {
     
-    int rank;
+   // int rank;
     //MPI_Comm_rank(MPI_COMM_WORLD, &rank);    
     char **shares = malloc(sizeof(char *) * n);
 	int len = strlen(secret);
