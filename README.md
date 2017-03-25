@@ -19,7 +19,7 @@ implemented parallel encryption using OpenMP, without breaking the decryption. W
 seeing linear speed up times with encryption currently as well as decryption.
 
 Compiled with -fopenmp and also is setup to use MPI, but is not currently implemented anywhere
-in the code.  Because the makefiles use MPICC, the module **must be loaded**. 
+in the code.  Because the makefiles use MPICC, **the module must be loaded**. 
 
 
 Makefiles are included for both parallel and serial versions in their respective directories.
@@ -37,7 +37,9 @@ There is a tester script located in the src directory for testing scaling
 To use tester script:
 
         ./test_script.sh <n> <t> <file>
-#####Example Usage: #####
+
+#####Example Usage: ######
+
 	./test_script.sh 255 150 1080CC.txt
 
 **OR**
