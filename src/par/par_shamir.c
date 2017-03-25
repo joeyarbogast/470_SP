@@ -119,7 +119,7 @@ int modular_exponentiation(int base,int exp,int mod)
 	t = threshold shares to recreate the number
 */
 int * split_number(int number, int n, int t) {
-	int *shares;// = malloc(sizeof(int)*n);
+	int *shares;
 	int coef[t];
 	int x,i;
 	shares = malloc(sizeof(int)*n);
@@ -260,7 +260,6 @@ int join_shares(int *xy_pairs, int n) {
 	//int *local_xy_pairs = malloc(sizeof(int) * n * 2);
 	
 	
-	//MPI_Bcast(xy_pairs,sizeof(xy_pairs), MPI_INT,0,MPI_COMM_WORLD);
 
 
 #	pragma omp parallel default(none) shared(num_threads,secret,n,prime,xy_pairs) \
@@ -349,7 +348,7 @@ char ** split_string(char * secret, int n, int t) {
 	//{
 	int i;
 //This does work without breaking anything, but the speed up is not drastic(only minor)
-#	pragma omp parallel for default(none) shared(n,t,len,secret,shares) private(i)
+//#	pragma omp parallel for default(none) shared(n,t,len,secret,shares) private(i)
 	for (i = 0; i < n; ++i)
 	{
 		/* need two characters to encode each character */
@@ -513,14 +512,12 @@ char * generate_share_strings(char * secret, int n, int t) {
         int len = strlen(secret);
         int key_len = 6 + 2 * len + 1;
         int i;
-        printf("before looping\n");
         char * shares = malloc(key_len * n + 1);
 
         for (i = 0; i < n; ++i)
         {
             sprintf(shares + i * key_len, "%s\n", result[i]);
         }
-        printf("after looping\n");
         free_string_shares(result, n);
 
         return shares;
