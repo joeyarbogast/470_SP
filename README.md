@@ -38,7 +38,7 @@ To use tester script:
 
         ./test_script.sh <n> <t> <file>
 
-#####Example Usage: ######
+##### Example Usage: #####
 
 	./test_script.sh 255 150 1080CC.txt
 
