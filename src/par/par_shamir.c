@@ -289,6 +289,36 @@ int join_shares(int *xy_pairs, int n) {
 	return secret;
 }
 
+#ifdef TEST
+void Test_join_shares(CuTest* tc) {
+	int n = 200;
+	int t = 100;
+
+	int shares[n*2];
+
+	int count = 255;	/* How many times should we test it? */
+	int j;
+
+	for (j = 0; j < count; ++j)
+	{
+		int * test = split_number(j, n, t);
+		int i;
+
+		for (i = 0; i < n; ++i)
+		{
+			shares[i*2] = i + 1;
+			shares[i*2 + 1] = test[i];
+		}
+
+		/* Send all n shares */
+		int result = join_shares(shares, n);
+
+		free(test);
+
+		CuAssertIntEquals(tc, j, result);
+	}
+}
+#endif
 
 /*
 	split_string() -- Divide a string into shares
