@@ -1,1 +1,55 @@
-How it ever came to pass that Arithmetic should be taught to the extent attained in the grammar schools of the civilized world, while Geometry is almost wholly excluded from them, is a problem for which the author of this little book has often sought a solution, but with only this result; viz., that Arithmetic, being considered an elementary branch, is included in all systems of elementary instruction; but Geometry, being regarded as a higher branch, is reserved for systems of advanced education, and is, on that account, reached by but very few of the many who need it.The error here is fundamental. Instead of teaching the elements of all branches, we teach elementary branches much too exhaustively.The elements of Geometry are much easier to learn, and are of more value when learned, than advanced Arithmetic; and, if a boy is to leave school with merely a grammar-school education, he would be better prepared for the active duties of life with a little Arithmetic and some Geometry, than with more Arithmetic and no Geometry. Thousands of boys are allow Char Count: 1080
+-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: AES-128-CBC,EC9DB0251CD97F4978EB01DFD6ACCA8E
+
+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
+-----END RSA PRIVATE KEY-----
+

@@ -1,7 +1,7 @@
 /*
 
 	shamir.c -- Shamir's Secret Sharing
-
+	Parallel implementation authors: Joey Arbogast & Isaac Sumner
 	Inspired by:
 
 		http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing#Javascript_example
@@ -120,25 +120,24 @@ int modular_exponentiation(int base,int exp,int mod)
 */
 int * split_number(int number, int n, int t) {
 	int *shares;
-	int coef[t];
+	//int coef[t];
+	int *coef = malloc(sizeof(int) * t);
+	int *local_coef = malloc(sizeof(int) * (t/nprocs));
 	int x,i;
 	shares = malloc(sizeof(int)*n);
 	//int *local_shares = malloc(sizeof(int)*n);
 	//int *coef = (int *)malloc(sizeof(int *) * t);
         //int *local_coef = (int*)malloc(sizeof(int *) *t);
 	coef[0] = number;
-	
 #	pragma omp parallel shared(nprocs,prime,t,coef,shares) private(number,x,i) 
 {
-    num_threads = omp_get_num_threads();
-
+    	num_threads = omp_get_num_threads();
 #	pragma omp for schedule(static, (t - 1))
 	for (i = 1; i < t; ++i)
 	{
 	/* Generate random coefficients */
 		coef[i] = rand() % (prime - 1);
 	}
-
 //    printf("Here I am\n");
 //    for (i = 0; i < ((t / nprocs) - 1); ++i)
 //    {
@@ -150,7 +149,6 @@ int * split_number(int number, int n, int t) {
   //  printf("Here I am again\n");
 //#	pragma omp master
 //	MPI_Scatter(coef,t/nprocs,MPI_INT,local_coef,t/nprocs,MPI_INT,0,MPI_COMM_WORLD);
-	
 #	pragma omp for schedule(static,2)
 	for (x = 0; x < n; ++x)
 	{
@@ -172,23 +170,6 @@ int * split_number(int number, int n, int t) {
 	return shares;  
 
 }
-
-
-#ifdef TEST
-void Test_split_number(CuTest* tc) {
-
-	seed_random();
-
-	int * test = split_number(1234, 50, 20);
-
-	//printf("Split\n1: %d\n2: %d\n3: %d\n4: %d\n5: %d\n6: %d\n", *test, *(test+1), *(test+2),
-	//	*(test+3),*(test+4),*(test+5));
-
-	free(test);
-
-	CuAssertIntEquals(tc, 0, 0);
-}
-#endif
 
 
 /*
@@ -293,38 +274,6 @@ int join_shares(int *xy_pairs, int n) {
 
 	return secret;
 }
-
-
-#ifdef TEST
-void Test_join_shares(CuTest* tc) {
-	int n = 200;
-	int t = 100;
-
-	int shares[n*2];
-
-	int count = 255;	/* How many times should we test it? */
-	int j;
-
-	for (j = 0; j < count; ++j)
-	{
-		int * test = split_number(j, n, t);
-		int i;
-
-		for (i = 0; i < n; ++i)
-		{
-			shares[i*2] = i + 1;
-			shares[i*2 + 1] = test[i];
-		}
-
-		/* Send all n shares */
-		int result = join_shares(shares, n);
-
-		free(test);
-
-		CuAssertIntEquals(tc, j, result);
-	}
-}
-#endif
 
 
 /*
@@ -471,35 +420,6 @@ char * join_strings(char ** shares, int n) {
 	return result;
 }
 
-
-#ifdef TEST
-void Test_split_string(CuTest* tc) {
-	int n = 255;	/* Maximum n = 255 */
-	int t = 254;	/* t <= n, we choose less than that so we have two tests */
-
-	char * phrase = "This is a test of Bücher and Später.";
-
-	int count = 10;
-	int i;
-
-	for (i = 0; i < count; ++i)
-	{
-		char ** result = split_string(phrase, n, t);
-
-		/* Extract secret using first t shares */
-		char * answer = join_strings(result, t);
-		CuAssertStrEquals(tc, phrase, answer);
-		free(answer);
-
-		/* Extract secret using all shares */
-		answer = join_strings(result, n);
-		CuAssertStrEquals(tc, phrase, answer);
-		free(answer);
-
-		free_string_shares(result, n);
-	}
-}
-#endif
 
 /*
         generate_share_strings() -- create a string of the list of the generated shares,
