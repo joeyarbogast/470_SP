@@ -170,7 +170,21 @@ int * split_number(int number, int n, int t) {
 	return shares;  
 
 }
+#ifdef TEST
+void Test_split_number(CuTest* tc) {
 
+	seed_random();
+
+	int * test = split_number(1234, 50, 20);
+
+	//printf("Split\n1: %d\n2: %d\n3: %d\n4: %d\n5: %d\n6: %d\n", *test, *(test+1), *(test+2),
+	//	*(test+3),*(test+4),*(test+5));
+
+	free(test);
+
+	CuAssertIntEquals(tc, 0, 0);
+}
+#endif
 
 /*
 	Math stuff
