@@ -23,7 +23,6 @@ OMP_NUM_THREADS=2 srun par/par_shamir $1 $2 < $3
 OMP_NUM_THREADS=4 srun par/par_shamir $1 $2 < $3
 OMP_NUM_THREADS=8 srun par/par_shamir $1 $2 < $3
 OMP_NUM_THREADS=16 srun par/par_shamir $1 $2 < $3
-OMP_NUM_THREADS=32 srun par/par_shamir $1 $2 < $3
 sleep 1
 echo "Share Keys Generated"
 

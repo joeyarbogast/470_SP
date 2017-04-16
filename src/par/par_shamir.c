@@ -120,14 +120,10 @@ int modular_exponentiation(int base,int exp,int mod)
 */
 int * split_number(int number, int n, int t) {
 	int *shares;
-	//int coef[t];
-	int *coef = malloc(sizeof(int) * t);
-	int *local_coef = malloc(sizeof(int) * (t/nprocs));
+	int coef[t];
+	//int local_coef[t/nprocs];
 	int x,i;
 	shares = malloc(sizeof(int)*n);
-	//int *local_shares = malloc(sizeof(int)*n);
-	//int *coef = (int *)malloc(sizeof(int *) * t);
-        //int *local_coef = (int*)malloc(sizeof(int *) *t);
 	coef[0] = number;
 #	pragma omp parallel shared(nprocs,prime,t,coef,shares) private(number,x,i) 
 {
