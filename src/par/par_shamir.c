@@ -369,6 +369,8 @@ char ** split_string(char * secret, int n, int t) {
 	
 
 	/* Now, handle the secret */
+    // This doesn't work I couldn't remember if you tried this
+//#   pragma omp parallel for default(none) shared(len, shares, secret, n, t) 
 	for (i = 0; i < len; ++i)
 	{
 		// fprintf(stderr, "char %c: %d\n", secret[i], (unsigned char) secret[i]);
@@ -379,6 +381,7 @@ char ** split_string(char * secret, int n, int t) {
 		//fprintf(stderr, "char: '%c' int: '%d'\n", secret[i], letter);
 		int * chunks = split_number(letter, n, t);
 		int j;
+#       pragma omp parallel for
 		for (j = 0; j < n; ++j)
 		{
 			if (chunks[j] == 256) {

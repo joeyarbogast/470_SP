@@ -6,11 +6,22 @@ then
 	exit
 fi
 
+if [ "$4" = "-d" ]
+then
+    dump=true
+else
+    dump=false
+fi
+
 echo "***********Serial Encryption*************"
 echo "Char Count: "  $3 
 srun serial/shamir $1 $2 < $3
-echo "Share Keys"
-cat keys.txt
+
+if $dump ; then
+    echo "Share Keys"
+    cat keys.txt
+fi
+
 echo
 echo "*********Serial Decryption **********"
 srun serial/shamir < keys.txt
@@ -24,9 +35,12 @@ OMP_NUM_THREADS=4 srun par/par_shamir $1 $2 < $3
 OMP_NUM_THREADS=8 srun par/par_shamir $1 $2 < $3
 OMP_NUM_THREADS=16 srun par/par_shamir $1 $2 < $3
 sleep 1
-echo "Share Keys Generated"
 
-cat keys.txt
+if $dump ; then
+    echo "Share Keys Generated"
+    cat keys.txt
+fi
+
 echo
 echo "*********Parallel Decryption Strong Scale Test ***************"
 echo
