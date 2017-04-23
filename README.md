@@ -193,18 +193,18 @@ The challenge was figuring out which variables needed to be private.
 To summarize which functions have been parallelize with OpenMp: `split_number` (part of encrypting files), and `join_shares`(decryption).,
 
 #### Update as of 4/23/2017 ####
-	We were able to get better weak scaling results by parallelizing an inner forloop in `split_string`
-	We have been unsucessful thus far with implementing MPI.  We have been focused on using MPI_Gather in
-	the 'split_number' function, but any calls to MPI collective operations seems to cause deadlock.  We
-	have tried to proctect the call with omp master, omp single, omp critical, but that doesn't seem to
-	help.
+* We were able to get better weak scaling results by parallelizing an inner forloop in `split_string`.
+* We have been unsucessful thus far with implementing MPI.  We have been focused on using MPI_Gather in
+the 'split_number' function, but any calls to MPI collective operations seem to cause deadlock.  We
+have tried to proctect the call with omp master, omp single, omp critical, but that doesn't seem to
+help.
 
 ### TODOs ###
 
-* Experiment with scheduling and do a performance writeup on it
+
 * Integrate MPI in place of OpenMP directives or incorporate it into the 
   existing OpenMP directives.
-* Make decryption performance charts and include them in the repository.
+* Create final performance analysis charts.
 
 ## The Shares ##
 ** Shares Explantion From Fletcher's github page:**
