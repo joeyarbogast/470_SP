@@ -86,9 +86,6 @@ unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
 }
 
 void seed_random(void) {
-    //int rank;
-    MPI_Comm_size(MPI_COMM_WORLD,&nprocs);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     unsigned long seed = mix(omp_get_wtime(), time(NULL), rank);
     srand(seed);
 }
@@ -257,7 +254,7 @@ int join_shares(int *xy_pairs, int n) {
 		private(numerator,denominator,value,startposition,nextposition,i,j)
 {
 	num_threads=omp_get_num_threads();
-#	pragma omp for
+#	pragma omp for schedule(dynamic, 2)
 	for (i = 0; i < n; ++i)
 	{
 		numerator = 1;

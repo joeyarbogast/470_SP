@@ -46,7 +46,7 @@ int rank;
 void init_mpi() {
 
     int provided;
-    printf("BLAH!!\n");
+   // printf("BLAH!!\n");
     fflush(stdout);
     MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
     if (provided != MPI_THREAD_MULTIPLE) {
