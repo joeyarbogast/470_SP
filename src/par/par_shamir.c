@@ -57,10 +57,8 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-#include <mpi.h>
 #include "par_shamir.h"
-extern int rank;
-extern int nprocs;
+
 int num_threads=1;
 static int prime = 257;
 /*
@@ -86,7 +84,7 @@ unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
 }
 
 void seed_random(void) {
-    unsigned long seed = mix(omp_get_wtime(), time(NULL), rank);
+    unsigned long seed = mix(omp_get_wtime(), time(NULL), prime);
     srand(seed);
 }
 
@@ -118,48 +116,37 @@ int modular_exponentiation(int base,int exp,int mod)
 int * split_number(int number, int n, int t) {
 	int *shares;
 	int coef[t];
-	//int local_coef[t/nprocs];
 	int x,i;
 	shares = malloc(sizeof(int)*n);
 	coef[0] = number;
-#	pragma omp parallel shared(nprocs,prime,t,coef,shares) private(number,x,i) 
-{
-    	num_threads = omp_get_num_threads();
+
+#	pragma omp parallel default(none) shared(num_threads, prime,n,t,coef,shares) private(number,x,i) 
+	{
+    		num_threads = omp_get_num_threads();
 #	pragma omp for schedule(static, (t - 1))
-	for (i = 1; i < t; ++i)
-	{
-	/* Generate random coefficients */
-		coef[i] = rand() % (prime - 1);
-	}
-//    printf("Here I am\n");
-//    for (i = 0; i < ((t / nprocs) - 1); ++i)
-//    {
-//        local_coef[i] = rand() % (prime - 1);
-//    }
-//    printf("Here I am before gathering\n");
-//    MPI_Gather(local_coef, (t / nprocs), MPI_INT, 
- //              coef, (t / nprocs), MPI_INT, 0, MPI_COMM_WORLD);
-  //  printf("Here I am again\n");
-//#	pragma omp master
-//	MPI_Scatter(coef,t/nprocs,MPI_INT,local_coef,t/nprocs,MPI_INT,0,MPI_COMM_WORLD);
-#	pragma omp for schedule(static,2)
-	for (x = 0; x < n; ++x)
-	{
-		//int y = local_coef[0];
-		int y = coef[0];
-		/* Calculate the shares */
 		for (i = 1; i < t; ++i)
 		{
-			int temp = modular_exponentiation(x+1, i, prime);
-			y = (y + (coef[i] * temp % prime)) % prime;
+		/* Generate random coefficients */
+			coef[i] = rand() % (prime - 1);
 		}
+
+#	pragma omp for schedule(static,2)
+		for (x = 0; x < n; ++x)
+		{
+			int y = coef[0];
+			/* Calculate the shares */
+			for (i = 1; i < t; ++i)
+			{
+				int temp = modular_exponentiation(x+1, i, prime);
+				y = (y + (coef[i] * temp % prime)) % prime;
+			}
 		
-		/* Sometimes we're getting negative numbers, and need to fix that */
-		y = (y + prime) % prime;
-		shares[x] = y;
+			/* Sometimes we're getting negative numbers, and need to fix that */
+			y = (y + prime) % prime;
+			shares[x] = y;
+		}
 	}
-}
-//	MPI_Gather(local_shares,n,MPI_INT,shares,n,MPI_INT,0,MPI_COMM_WORLD);
+
 	return shares;  
 
 }
@@ -245,36 +232,32 @@ int join_shares(int *xy_pairs, int n) {
 	long value;
 	int i;
 	int j;
-	//int *local_xy_pairs = malloc(sizeof(int) * n * 2);
 	
-	
-
-
-#	pragma omp parallel default(none) shared(num_threads,secret,n,prime,xy_pairs) \
-		private(numerator,denominator,value,startposition,nextposition,i,j)
-{
-	num_threads=omp_get_num_threads();
-#	pragma omp for schedule(dynamic, 2)
-	for (i = 0; i < n; ++i)
+#	pragma omp parallel default(none) shared(num_threads, secret, n, prime, xy_pairs) \
+		private(numerator, denominator, value, startposition, nextposition, i, j)
 	{
-		numerator = 1;
-		denominator = 1;
-		for (j = 0; j < n; ++j)
+		num_threads=omp_get_num_threads();
+#	pragma omp for schedule(dynamic, 2)
+		for (i = 0; i < n; ++i)
 		{
-			if(i != j) {
-				startposition = xy_pairs[i*2];
-				nextposition = xy_pairs[j*2];
-				numerator = (numerator * -nextposition) % prime;
-				denominator = (denominator * (startposition - nextposition)) % prime;
-				//fprintf(stderr, "Num: %lli\nDen: %lli\n", numerator, denominator);
+			numerator = 1;
+			denominator = 1;
+			for (j = 0; j < n; ++j)
+			{
+				if(i != j) {
+					startposition = xy_pairs[i*2];
+					nextposition = xy_pairs[j*2];
+					numerator = (numerator * -nextposition) % prime;
+					denominator = (denominator * (startposition - nextposition)) % prime;
+					//fprintf(stderr, "Num: %lli\nDen: %lli\n", numerator, denominator);
+				}
 			}
-		}
 		
-		value = xy_pairs[i *2 + 1];
+			value = xy_pairs[i *2 + 1];
 #	pragma omp critical		
-		secret = (secret + (value * numerator * modInverse(denominator))) % prime;
+			secret = (secret + (value * numerator * modInverse(denominator))) % prime;
+		}
 	}
-}
 
 	/* Sometimes we're getting negative numbers, and need to fix that */
 	secret = (secret + prime) % prime;
@@ -319,22 +302,13 @@ void Test_join_shares(CuTest* tc) {
 */
 
 char ** split_string(char * secret, int n, int t) {
-    
-   // int rank;
-    //MPI_Comm_rank(MPI_COMM_WORLD, &rank);    
-    char **shares = malloc(sizeof(char *) * n);
+    	
+	char **shares = malloc(sizeof(char *) * n);
 	int len = strlen(secret);
-	//MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
-    //char **loc_shares = malloc(sizeof(char *) * (n / nprocs));
-    //int loc_len = len / nprocs;
-    //char *loc_secret = malloc(sizeof(char) * loc_len);
 
-    //int i;
-	//for (i = 0; i < n; ++i)
-	//{
 	int i;
-//This does work without breaking anything, but the speed up is not drastic(only minor)
-//#	pragma omp parallel for default(none) shared(n,t,len,secret,shares) private(i)
+	//This does work without breaking anything, but the speed up is not drastic(only minor)
+#	pragma omp parallel for default(none) shared(n,t,len,secret,shares) private(i)
 	for (i = 0; i < n; ++i)
 	{
 		/* need two characters to encode each character */
@@ -343,22 +317,7 @@ char ** split_string(char * secret, int n, int t) {
 		
 			http://www.christophedavid.org/w/c/w.php/Calculators/ShamirSecretSharing
 		*/
-	//	shares[i] = (char *) malloc(2 * len + 6 + 1);
-
-	//	sprintf(shares[i], "%02X%02XAA", (i+1), t);
-	//}
     
-    //for (i = 0; i < (n / nprocs); ++i)
-    //{
-    //    loc_shares[i] = (char *)malloc(2 * len + 6 + 1);
-    //    sprintf(loc_shares[i], "%02X%02XAA", (i+1), t);
-    //}
-    
-    /* Now, handle the secret */
-    //MPI_Scatter(secret, loc_len, MPI_INT, loc_secret, 
-    //            loc_len, MPI_INT, 0, MPI_COMM_WORLD);
-	
-    //for (i = 0; i < loc_len; ++i)
 		shares[i] = (char *) malloc(2*len + 6 + 1);
 
 		sprintf(shares[i], "%02X%02XAA",(i+1),t);
@@ -390,8 +349,6 @@ char ** split_string(char * secret, int n, int t) {
 
 		free(chunks);
 	}
-    //MPI_Gather(loc_shares, (n / nprocs), MPI_INT, shares, 
-    //           (n / nprocs), MPI_INT, 0, MPI_COMM_WORLD);
 
 	// fprintf(stderr, "%s\n", secret);
 	return shares;
