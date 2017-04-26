@@ -237,7 +237,7 @@ int join_shares(int *xy_pairs, int n) {
 		private(numerator, denominator, value, startposition, nextposition, i, j)
 	{
 		num_threads=omp_get_num_threads();
-#	pragma omp for schedule(dynamic, 2)
+#	pragma omp for schedule(static, 2)
 		for (i = 0; i < n; ++i)
 		{
 			numerator = 1;
@@ -307,7 +307,7 @@ char ** split_string(char * secret, int n, int t) {
 	int len = strlen(secret);
 	int i;
 
-#	pragma omp parallel for default(none) shared(n,t,len,secret,shares) private(i)
+#	pragma omp parallel for schedule(static, t -1) default(none) shared(n,t,len,secret,shares) private(i)
 	for (i = 0; i < n; ++i)
 	{
 		/* need two characters to encode each character */
@@ -336,7 +336,7 @@ char ** split_string(char * secret, int n, int t) {
 		//fprintf(stderr, "char: '%c' int: '%d'\n", secret[i], letter);
 		int * chunks = split_number(letter, n, t);
 		int j;
-#       pragma omp parallel for
+#       pragma omp parallel for schedule(static, 2)
 		for (j = 0; j < n; ++j)
 		{
 			if (chunks[j] == 256) {
