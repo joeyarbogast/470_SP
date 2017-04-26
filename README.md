@@ -139,6 +139,16 @@ to stdout while the program is running.
 |   16  | 1080 | 0.3680s|
 
 
+![4096 Bit RSA Key (ASCII) - Key Generation - Strong Scaling Test](https://github.com/arbogajk/470_SP/blob/master/keyGenRSA.png)
+
+|Threads| Time|
+|:------:|:----:|
+| 1 | 28.5968s |
+| 2 | 14.4024s |
+| 4 | 7.9756s |
+| 8 | 4,5282s |
+| 16 | 2.8208s |
+
 
 #####                Parallel Weak Scaling Test #####
 
