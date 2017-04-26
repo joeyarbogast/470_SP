@@ -120,17 +120,18 @@ int * split_number(int number, int n, int t) {
 	shares = malloc(sizeof(int)*n);
 	coef[0] = number;
 
-#	pragma omp parallel default(none) shared(num_threads, prime,n,t,coef,shares) private(number,x,i) 
+#	pragma omp parallel default(none) \
+		shared(num_threads, prime,n,t,coef,shares) private(number,x,i) 
 	{
     		num_threads = omp_get_num_threads();
-#	pragma omp for schedule(static, (t - 1))
+#	pragma omp for schedule(static, t -1)
 		for (i = 1; i < t; ++i)
 		{
 		/* Generate random coefficients */
 			coef[i] = rand() % (prime - 1);
 		}
 
-#	pragma omp for schedule(static,2)
+#	pragma omp for schedule(static, 2)
 		for (x = 0; x < n; ++x)
 		{
 			int y = coef[0];
@@ -237,7 +238,7 @@ int join_shares(int *xy_pairs, int n) {
 		private(numerator, denominator, value, startposition, nextposition, i, j)
 	{
 		num_threads=omp_get_num_threads();
-#	pragma omp for schedule(static, 2)
+#	pragma omp for schedule(static, 1)
 		for (i = 0; i < n; ++i)
 		{
 			numerator = 1;
@@ -306,8 +307,8 @@ char ** split_string(char * secret, int n, int t) {
 	char **shares = malloc(sizeof(char *) * n);
 	int len = strlen(secret);
 	int i;
-
-#	pragma omp parallel for schedule(static, t -1) default(none) shared(n,t,len,secret,shares) private(i)
+#	pragma omp parallel for schedule(dynamic, 2)\
+		 default(none) shared(num_threads, n, t, len, secret,shares) private(i)
 	for (i = 0; i < n; ++i)
 	{
 		/* need two characters to encode each character */
@@ -377,7 +378,6 @@ char * join_strings(char ** shares, int n) {
 	char * result = malloc(len + 1);
 	char codon[3];
 	codon[2] = '\0';	// Must terminate the string!
-
 	int x[n];
 	int i;
 	int j;
