@@ -14,7 +14,7 @@ else
 fi
 
 echo "***********Serial Key Share Generation *************"
-echo "Char Count: "  $3 
+echo "File(char count specified by file name): "  $3 
 srun serial/shamir $1 $2 < $3
 
 if $dump ; then
@@ -29,11 +29,11 @@ echo
 echo "**********Parallel Key Share Generation- Strong Scale Test************"
 echo
 echo "Char Count: " $3
-OMP_NUM_THREADS=1 srun par/par_shamir $1 $2 < $3
-OMP_NUM_THREADS=2 srun par/par_shamir $1 $2 < $3
-OMP_NUM_THREADS=4 srun par/par_shamir $1 $2 < $3
-OMP_NUM_THREADS=8 srun par/par_shamir $1 $2 < $3
-OMP_NUM_THREADS=16 srun par/par_shamir $1 $2 < $3
+OMP_NUM_THREADS=1 	srun par/par_shamir $1 $2 < $3
+OMP_NUM_THREADS=2 	srun par/par_shamir $1 $2 < $3
+OMP_NUM_THREADS=4 	srun par/par_shamir $1 $2 < $3
+OMP_NUM_THREADS=8 	srun par/par_shamir $1 $2 < $3
+OMP_NUM_THREADS=16 	srun par/par_shamir $1 $2 < $3
 sleep 1
 
 if $dump ; then
@@ -45,11 +45,11 @@ echo
 echo "*********Parallel Secret Join - Strong Scale Test ***************"
 echo
 sleep 1
-OMP_NUM_THREADS=1 srun par/par_shamir < keys.txt
-OMP_NUM_THREADS=2 srun par/par_shamir < keys.txt
-OMP_NUM_THREADS=4 srun par/par_shamir < keys.txt
-OMP_NUM_THREADS=8 srun par/par_shamir < keys.txt
-OMP_NUM_THREADS=16 srun par/par_shamir < keys.txt
+OMP_NUM_THREADS=1 	srun par/par_shamir < keys.txt
+OMP_NUM_THREADS=2 	srun par/par_shamir < keys.txt
+OMP_NUM_THREADS=4 	srun par/par_shamir < keys.txt
+OMP_NUM_THREADS=8 	srun par/par_shamir < keys.txt
+OMP_NUM_THREADS=16 	srun par/par_shamir < keys.txt
 echo "********************************************************************"
 echo 
 echo "Test that we are actually decrypting"
@@ -60,8 +60,8 @@ echo "**********************************************************************"
 sleep 1
 echo
 echo "**********Parallel Key Share Generation -  Weak Scaling Test ******************"
-OMP_NUM_THREADS=1 	srun par/par_shamir $1 $2 < 540CC.txt
-OMP_NUM_THREADS=2 	srun par/par_shamir $1 $2 < 1080CC.txt
-OMP_NUM_THREADS=4 	srun par/par_shamir $1 $2 < 2160CC.txt
-OMP_NUM_THREADS=8 	srun par/par_shamir $1 $2 < 4320CC.txt
-OMP_NUM_THREADS=16 	srun par/par_shamir $1 $2 < 8640CC.txt
+OMP_NUM_THREADS=1 	srun par/par_shamir $1 $2 < test_input_files/540CC.txt
+OMP_NUM_THREADS=2 	srun par/par_shamir $1 $2 < test_input_files/1080CC.txt
+OMP_NUM_THREADS=4 	srun par/par_shamir $1 $2 < test_input_files/2160CC.txt
+OMP_NUM_THREADS=8 	srun par/par_shamir $1 $2 < test_input_files/4320CC.txt
+OMP_NUM_THREADS=16 	srun par/par_shamir $1 $2 < test_input_files/8640CC.txt
