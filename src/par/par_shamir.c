@@ -305,9 +305,8 @@ char ** split_string(char * secret, int n, int t) {
     	
 	char **shares = malloc(sizeof(char *) * n);
 	int len = strlen(secret);
-
 	int i;
-	//This does work without breaking anything, but the speed up is not drastic(only minor)
+
 #	pragma omp parallel for default(none) shared(n,t,len,secret,shares) private(i)
 	for (i = 0; i < n; ++i)
 	{
