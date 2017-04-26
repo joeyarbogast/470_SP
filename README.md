@@ -88,6 +88,7 @@ The tester script will automatically handle inputing this file into the program.
 	OMP_NUM_THREADS=4 srun par/par_shamir < keys.txt
 
 **To output the decrypted file:**
+
 	OMP_NUM_THREADS=4 srun par/par_shamir < keys.txt > decrypted_file.txt
 
 This reads the keys from `keys.txt` and uses them to reproduce the secret,
@@ -110,21 +111,34 @@ to stdout while the program is running.
 |1080| 9.3400s|
 
 
-#####               Parallel Strong Scaling Test #####
+#####      Final  Parallel Key Generation - Strong Scaling Test #####
 
-![Strong Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/StrongScaleTestingChart.png)
-
-
+![Key Generation - Strong Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/keyGen1080StrongScale.png)
 
 
 
 | Threads | Char Cnt | Time    |
 |:-------:|:--------:|:-------:|
-| 1       | 1080     | 9.3332s |
-| 2       | 1080     | 4.7888s |
-| 4       | 1080     | 2.8731s |
-| 8       | 1080     | 1.5576s |
-| 16      | 1080     | 1.0493s |
+| 1       | 1080     | 9.3661s |
+| 2       | 1080     | 4.7160s |
+| 4       | 1080     | 2.6117s |
+| 8       | 1080     | 1.4698s |
+| 16      | 1080     | 0.9234s |
+
+#####     Final Parallel Key Join - Strong Scaling Test #####
+
+![Key Join - Strong Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/secretJoin1080.png)
+
+
+|Threads | Char Cnt | Time |
+|:------:|:---------:|:------:|
+|   1	| 1080 | 1.6659s|
+|   2   | 1080 | 0.8700s|
+|   4   | 1080 | 0.5788s |
+|   8   | 1080 | 0.4194s |
+|   16  | 1080 | 0.3680s|
+
+
 
 #####                Parallel Weak Scaling Test #####
 
