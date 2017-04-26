@@ -5,35 +5,52 @@
 | Serial Version Author:    | Fletcher T. Penney       |
 | Date:      | 2017-03-01 |
 | Parallel Version Author's: | Joey Arbogast, Isaac Sumner	|
-| Version: |1.0|
+| Version: |2.0|
 
 ## Introduction ##
 
 This is an implementation of [Shamir's Secret Sharing][shamir], taken from
-github user [fletcher](https://github.com/fletcher/c-sss)
+github user [fletcher](https://github.com/fletcher/c-sss) @fletcher
 
-We are working on the parallelization and distributed computation of Fletcher's implementation of Shamir's 
+We were able to parallelize the computation of Fletcher's implementation of Shamir's 
 Secret Sharing Algorithm as part of a course project in CS 470: Parallel and Distributed Systems
 at [James Madison University](https://w3.cs.jmu.edu/lam2mo/cs470_2017_01/). We have successfully
-implemented parallel encryption using OpenMP, without breaking the decryption. We are 
-seeing linear speed up times with encryption currently as well as decryption.
+implemented parallel versions of the `split_string` and `split_number` function using OpenMP.  We were also
+able to parallelize the `join_shares` function that handles reconstructing the secret. We are 
+seeing near linear speed up times with key generation and joining the shares.
 
-Compiled with -fopenmp and also is setup to use MPI, but is not currently implemented anywhere
-in the code.  Because the makefiles use MPICC, **the module must be loaded**. 
+## How to Compile ##
+### Prerequistes ###
+OpenMP must be installed on the system
+SLURM must be installed for the `test_script.sh` script to work.
 
+** Compiled with -fopenmp **   
 
-Makefiles are included for both parallel and serial versions in their respective directories.
+Makefiles are included for both parallel and and the original serial versions in their respective directories.
 We created a make shell script located in the `src` directory to handle running make in each directory 
 so it's best to just use that.
+	./make.sh
+
 
 The majority of our work has taken place in `src/par/par_shamir.c` and `src/par/main.c`
 
 ## Usage:  ##
+### Test Data Sets ###
+The text files and private RSA key we used in our scaling test are located in the directory
+`src/test_input_files` and should be used in the scaling test.
 
-Run spack load mpi on the cluster.
-Compile with make.sh script file.
+### Running the Tester Shell Script ###
+There is a tester script located in the src directory for testing scaling called `test_script.sh`.
+The script takes 3 arguments, the number of shares to generate, the required threshold for unlocking 
+the secret and the input file to test on.
 
-There is a tester script located in the src directory for testing scaling
+The script handles Strong Scaling test, doubling the thread count each pass up to 16 threads.  It also
+handles strong scaling test of joining the shares back up to reproduce the secret up to 16 threads and
+outputs the secret to make sure it worked.
+
+The weak scaling test at the end of the shell script starts with our 540 character text file, and doubles
+the thread count and input data size (number of characters in the file) each time up to 16 threads.
+
 
 To use tester script:
 
@@ -52,15 +69,12 @@ Running individual test from src directory:
         OMP_NUM_THREADS=8 srun par/par_shamir 255 255 < 1080CC.txt
 
 
-This will generate key shares from the text file and generate 255 shares, all 255 of which are required
+This will generate 255 key shares from the text file all 255 of which are required
 to unlock the secret.  The key shares generated are written to `keys.txt`. If you delete keys from the file to
 make it less than the unlock threshold you can verify that the original secret cannot be reconstructed.
 
 **DO NOT GO OVER 255 FOR EITHER SHARES OR REQUIRED UNLOCK(causes seg faults)**
 
-There are included test files with varying character lengths specified by the number in the
-text file name.  Use these as inputs into the program to test scaling.
-There is also an 4096 bit RSA Private key for testing called ssskey-4096
 
 ### Joining Shares to Reproduce Secret  ###
 To join the key shares and produce the original secret input the keys.txt file into the program and it will generate the
