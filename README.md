@@ -138,8 +138,9 @@ to stdout while the program is running.
 |   8   | 1080 | 0.4194s |
 |   16  | 1080 | 0.3680s|
 
-
+##### 4096 Bit RSA Key (ASCII) - Key Generation - Strong Scaling Test #####
 ![4096 Bit RSA Key (ASCII) - Key Generation - Strong Scaling Test](https://github.com/arbogajk/470_SP/blob/master/keyGenRSA.png)
+
 
 |Threads| Time|
 |:------:|:----:|
@@ -150,9 +151,22 @@ to stdout while the program is running.
 | 16 | 2.8208s |
 
 
+![RSA Key - Key Join - Strong Scaling Test](https://github.com/arbogajk/470_SP/blob/master/secretHiubRSA,png)
+
+
+|Threads | Time |
+|:-------:|:------:|
+| 1 | 5.0986s |
+| 2 | 2,7584s |
+| 4 | 1.5730s |
+| 8 | 0.9620s |
+| 16 | 0.8216s |
+
+
 #####                Parallel Weak Scaling Test #####
 
 ![Weak Scaling Test Chart](https://github.com/arbogajk/470_SP/blob/master/WeakScaleTestingChart.png)
+
 
 | Threads | Char Cnt | Time |
 |:-------:|:------:|:-----:|
