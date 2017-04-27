@@ -43,11 +43,13 @@ The text files and private RSA key we used in our scaling test are located in th
 ### Running the Tester Shell Script ###
 There is a tester script located in the src directory for testing scaling called `test_script.sh`.
 The script takes 3 arguments, the number of shares to generate, the required threshold for unlocking 
-the secret and the input file to test on.
+the secret and the input file to conduct the test with.
 
-The script handles Strong Scaling test, doubling the thread count each pass up to 16 threads.  It also
+The script handles strong scaling test, doubling the thread count each pass up to 16 threads.  It also
 handles strong scaling test of joining the shares back up to reproduce the secret up to 16 threads and
 outputs the secret to make sure it worked.
+
+The command line option -d may be specified to print the keys to stdout.
 
 The weak scaling test at the end of the shell script starts with our 540 character text file, and doubles
 the thread count and input data size (number of characters in the file) each time up to 16 threads.
