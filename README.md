@@ -10,7 +10,7 @@
 ## Introduction ##
 
 This is an implementation of [Shamir's Secret Sharing][shamir], originally written by
-github user [fletcher](https://github.com/fletcher/c-sss) @github/fletcher, parallelized by
+github user [fletcher](https://github.com/fletcher/c-sss) @fletcher, parallelized by
 Joey Arbogast and Isaac Sumner.
 
 We were able to parallelize the computation of Fletcher's implementation of Shamir's 
