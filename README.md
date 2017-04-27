@@ -180,7 +180,7 @@ to stdout while the program is running.
 
 ![Final Weak Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/WeakScaling.png)
 
-
+#####  Weak Scaling After Parallelizing `split_string` #####
 | Thread | Char Cnt | Time |
 |:-------:|:-------:|:------:|
 |  1	|    540  |   4.6673s |
@@ -188,6 +188,8 @@ to stdout while the program is running.
 |  4    |    2160 |  5.2831s |
 |  8    |    4320 |  5.8683s |
 |  16   |    8640 |  7.4179 |
+
+
 ### Scheduled For Loops Analysis ###
 
 ##### First For Loop Only #####
