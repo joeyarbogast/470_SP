@@ -61,7 +61,7 @@ To use tester script:
 
 ##### Example Usage: #####
 
-	./test_script.sh 255 150 1080CC.txt
+	./test_script.sh 255 150 test_input_files/1080CC.txt
 
 **OR**
 
@@ -69,7 +69,7 @@ Running individual test from src directory:
 
 #### Example: ####
 
-        OMP_NUM_THREADS=8 srun par/par_shamir 255 255 < 1080CC.txt
+        OMP_NUM_THREADS=8 srun par/par_shamir 255 255 < test_input_files/1080CC.txt
 
 
 This will generate 255 key shares from the text file all 255 of which are required
