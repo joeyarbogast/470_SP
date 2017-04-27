@@ -114,7 +114,7 @@ to stdout while the program is running.
 
 #####      Final  Parallel Key Generation - Strong Scaling Test #####
 
-![Key Generation - Strong Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/keyGen1080StrongScale.png)
+![Key Generation - Strong Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/images/keyGen1080StrongScale.png)
 
 
 
@@ -128,7 +128,7 @@ to stdout while the program is running.
 
 #####     Final Parallel Key Join - Strong Scaling Test #####
 
-![Key Join - Strong Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/secretJoin1080.png)
+![Key Join - Strong Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/images/secretJoin1080.png)
 
 
 |Threads | Char Cnt | Time |
@@ -140,7 +140,7 @@ to stdout while the program is running.
 |   16  | 1080 | 0.3680s|
 
 ##### 4096 Bit RSA Key (ASCII) - Key Generation - Strong Scaling Test #####
-![4096 Bit RSA Key (ASCII) - Key Generation - Strong Scaling Test](https://github.com/arbogajk/470_SP/blob/master/keyGenRSA.png)
+![4096 Bit RSA Key (ASCII) - Key Generation - Strong Scaling Test](https://github.com/arbogajk/470_SP/blob/master/images/keyGenRSA.png)
 
 
 |Threads| Time|
@@ -152,7 +152,7 @@ to stdout while the program is running.
 | 16 | 2.8208s |
 
 
-![RSA Key - Key Join - Strong Scaling Test](https://github.com/arbogajk/470_SP/blob/master/secretJoinRSA.png)
+![RSA Key - Key Join - Strong Scaling Test](https://github.com/arbogajk/470_SP/blob/master/images/secretJoinRSA.png)
 
 
 |Threads | Time |
@@ -166,7 +166,7 @@ to stdout while the program is running.
 
 #####                Parallel Weak Scaling Test #####
 
-![Original Weak Scaling Test Chart](https://github.com/arbogajk/470_SP/blob/master/originalWeakScaling.png)
+![Original Weak Scaling Test Chart](https://github.com/arbogajk/470_SP/blob/master/images/originalWeakScaling.png)
 
 ##### Original Weak Scaling Test (Before parallelizing `split_string`) #####
 
@@ -179,7 +179,7 @@ to stdout while the program is running.
 | 16      | 8640     | 8.3774s|
 
 
-![Final Weak Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/WeakScaling.png)
+![Final Weak Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/images/WeakScaling.png)
 
 #####  Weak Scaling After Parallelizing `split_string` #####
 | Thread | Char Cnt | Time |
