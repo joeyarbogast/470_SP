@@ -21,10 +21,10 @@ seeing near linear speed up times with key generation and joining the shares.
 
 ## How to Compile ##
 ### Prerequistes ###
-OpenMP must be installed on the system
-SLURM must be installed for the `test_script.sh` script to work.
+* OpenMP must be installed on the system
+* SLURM must be installed for the `test_script.sh` script to work.
 
-** Compiled with -fopenmp **   
+**Compiled with -fopenmp**   
 
 Makefiles are included for both parallel and and the original serial versions in their respective directories.
 We created a make shell script located in the `src` directory to handle running make in each directory 
@@ -221,42 +221,15 @@ to stdout while the program is running.
 | 8 | guided | 1.4908s |
 
 
-## Decryption Scaling Test ##
-
-![Strong Scaling Decryption Test](https://github.com/arbogajk/470_SP/blob/master/1080-decryption.png)
-
-|Threads|Char Cnt | Time |
-|:------:|:-------:|:-------:|
-|1|1080|1.6499|
-|2|1080|0.8492|
-|4|1080|0.5051|
-|8|1080|0.3247|
-|16|1080|0.3786|
-
-
-![Strong Scaling Decryption With 8640 Characters](https://github.com/arbogajk/470_SP/blob/master/8640-Decryption.png)
-
-|Threads|Char Cnt| Time|
-|:------:|:-----:|:------:|
-|1|8640|13.6891 |
-|2| 8640|9.6236  |
-|4| 8640|4.1306  |
-|8| 8640| 2.6602 |
-|16| 8640|2.2889 |
-
-
-
-
-
  
 
 ## Project Status ##
 
-We have successfully parallelized the the `split_number` function using OpenMP directives.  Specifically
-we parallelized the random coefficient generation and have parallelized the for loop that calculates
-the shares.  We just recently were able to parallelize the decryption and see linear scaling with it as well.  
-The challenge was figuring out which variables needed to be private.  
-To summarize which functions have been parallelize with OpenMp: `split_number` (part of encrypting files), and `join_shares`(decryption).,
+We have successfully parallelized the the `split_number`, `split_string` and `join_shares` functions using OpenMP directives.
+We were unsuccessful in implementing distributed computation as well using MPICH.  We still believe it is possible, but were 
+unable to implement it in the project time.
+
+
 
 #### Update as of 4/23/2017 ####
 * We were able to get better weak scaling results by parallelizing an inner forloop in `split_string`.
@@ -270,7 +243,6 @@ help.
 
 * Integrate MPI in place of OpenMP directives or incorporate it into the 
   existing OpenMP directives.
-* Create final performance analysis charts.
 
 ## The Shares ##
 ** Shares Explantion From Fletcher's github page:**
