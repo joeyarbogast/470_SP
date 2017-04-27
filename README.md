@@ -151,7 +151,7 @@ to stdout while the program is running.
 | 16 | 2.8208s |
 
 
-![RSA Key - Key Join - Strong Scaling Test](https://github.com/arbogajk/470_SP/blob/master/secretJoinRSA,png)
+![RSA Key - Key Join - Strong Scaling Test](https://github.com/arbogajk/470_SP/blob/master/secretJoinRSA.png)
 
 
 |Threads | Time |
