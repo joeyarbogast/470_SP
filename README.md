@@ -165,8 +165,9 @@ to stdout while the program is running.
 
 #####                Parallel Weak Scaling Test #####
 
-![Weak Scaling Test Chart](https://github.com/arbogajk/470_SP/blob/master/WeakScaleTestingChart.png)
+![Original Weak Scaling Test Chart](https://github.com/arbogajk/470_SP/blob/master/originalWeakScaling.png)
 
+##### Original Weak Scaling Test (Before parallelizing `split_string`) #####
 
 | Threads | Char Cnt | Time |
 |:-------:|:------:|:-----:|
@@ -176,6 +177,17 @@ to stdout while the program is running.
 | 8       | 4320     | 6.3220s|
 | 16      | 8640     | 8.3774s|
 
+
+![Final Weak Scaling Chart](https://github.com/arbogajk/470_SP/blob/master/WeakScaling.png)
+
+
+| Thread | Char Cnt | Time |
+|:-------:|:-------:|:------:|
+|  1	|    540  |   4.6673s |
+|  2    |    1080 |  4.7118s |
+|  4    |    2160 |  5.2831s |
+|  8    |    4320 |  5.8683s |
+|  16   |    8640 |  7.4179 |
 ### Scheduled For Loops Analysis ###
 
 ##### First For Loop Only #####
