@@ -1,0 +1,90 @@
+%<*mtag1>
+\begin{figure}[H]
+\centering
+\captionsetup{width=1\linewidth}
+\includegraphics[scale=0.35]{\ImgPath/CombinedStrongScaling.png}
+\caption{Results of Generating 255 keys with a required unlock threshold of 255 for a 4096 bit RSA key and 1080 character input file.}
+\label{fig:1}
+\centering
+\end{figure}
+%</mtag1>
+
+%<*mtag2>
+\begin{figure}[H]
+\centering
+\captionsetup{width=1\linewidth}
+\includegraphics[scale=0.5]{\ImgPath/combinedKeyJoin.png}
+\caption{Results of joining all 255 keys to reproduce the secret from the RSA key and the 1080 character file.}
+\label{fig:2}
+\centering
+\end{figure}
+%</mtag2>
+
+
+
+
+
+
+
+%************************TABLES************************************
+
+
+
+%<*mtag200>
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+\multicolumn{3}{c}{{\ul \textbf{Key Generation Results}}}                                                                                                     \\ \hline
+\multicolumn{1}{|c|}{{\ul \textbf{Threads}}} & \multicolumn{1}{c|}{{\ul \textbf{4096 Bit RSA Key}}} & \multicolumn{1}{c|}{{\ul \textbf{1080 Character File}}} \\ \hline
+\multicolumn{1}{|c|}{1}                      & \multicolumn{1}{c|}{28.6211}                         & \multicolumn{1}{c|}{9.3661}                             \\ \hline
+\multicolumn{1}{|c|}{2}                      & \multicolumn{1}{c|}{14.4674}                         & \multicolumn{1}{c|}{4.7160}                             \\ \hline
+\multicolumn{1}{|c|}{4}                      & \multicolumn{1}{c|}{8.0794}                          & \multicolumn{1}{c|}{2.6117}                             \\ \hline
+\multicolumn{1}{|c|}{8}                      & \multicolumn{1}{c|}{4.6039}                          & \multicolumn{1}{c|}{1.4698}                             \\ \hline
+\multicolumn{1}{|c|}{16}                     & \multicolumn{1}{c|}{3.0933}                          & \multicolumn{1}{c|}{0.9234}                             \\ \hline
+\end{tabular}
+\caption{Shows the times taken to generate 255 keys with a threshold of 255}
+\label{tab:1}
+\end{table}
+%</mtag200>
+
+
+%<*mtag201>
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+\multicolumn{3}{c}{{\ul \textbf{Key Join Results}}}                                                                                                           \\ \hline
+\multicolumn{1}{|c|}{{\ul \textbf{Threads}}} & \multicolumn{1}{c|}{{\ul \textbf{4096 Bit RSA Key}}} & \multicolumn{1}{c|}{{\ul \textbf{1080 Character File}}} \\ \hline
+\multicolumn{1}{|c|}{1}                      & \multicolumn{1}{c|}{5.1092}                          & \multicolumn{1}{c|}{1.6499}                             \\ \hline
+\multicolumn{1}{|c|}{2}                      & \multicolumn{1}{c|}{2.6740}                          & \multicolumn{1}{c|}{0.8492}                             \\ \hline
+\multicolumn{1}{|c|}{4}                      & \multicolumn{1}{c|}{1.5339}                          & \multicolumn{1}{c|}{0.5051}                             \\ \hline
+\multicolumn{1}{|c|}{8}                      & \multicolumn{1}{c|}{0.9670}                          & \multicolumn{1}{c|}{0.3247}                             \\ \hline
+\multicolumn{1}{|c|}{16}                     & \multicolumn{1}{c|}{1.1331}                          & \multicolumn{1}{c|}{0.3786}                             \\ \hline
+\end{tabular}
+\caption{Times taken to reassemble the 255 keys to reproduce the secret}
+\label{tab:2}
+\end{table}
+%</mtag201>
+
+
+
+
+
+
+
+%<*mtag203>
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+\multicolumn{3}{c}{{\ul \textbf{Weak Scaling Test Results}}}                                                                                  \\ \hline
+\multicolumn{1}{|c|}{{\ul \textbf{Threads}}} & \multicolumn{1}{c|}{{\ul \textbf{Character Count}}} & \multicolumn{1}{c|}{{\ul \textbf{Time}}} \\ \hline
+\multicolumn{1}{|c|}{1}                      & \multicolumn{1}{c|}{540}                            & \multicolumn{1}{c|}{4.6673}              \\ \hline
+\multicolumn{1}{|c|}{2}                      & \multicolumn{1}{c|}{1080}                           & \multicolumn{1}{c|}{4.7118}              \\ \hline
+\multicolumn{1}{|c|}{4}                      & \multicolumn{1}{c|}{2160}                           & \multicolumn{1}{c|}{5.2831}              \\ \hline
+\multicolumn{1}{|c|}{8}                      & \multicolumn{1}{c|}{4320}                           & \multicolumn{1}{c|}{5.8683}              \\ \hline
+\multicolumn{1}{|c|}{16}                     & \multicolumn{1}{c|}{8640}                           & \multicolumn{1}{c|}{7.4179}              \\ \hline
+\end{tabular}
+\caption{This table shows our results of our weak scaling tests after parallelizing the second loop in split\_string function. }
+\label{tab:3}
+\end{table}
+%</mtag203>

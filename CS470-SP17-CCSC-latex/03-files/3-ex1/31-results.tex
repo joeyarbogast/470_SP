@@ -1,0 +1,29 @@
+\documentclass[main.tex]{subfiles}
+
+
+\begin{document}
+
+\indent We were able to significantly speed up the secret splitting and joining using OpenMP. Our approach shows substantial strong and weak scaling. Here are some of our results: 
+
+\subsection{Strong Scaling}
+
+\indent In Figure \ref{fig:1} and Table \ref{tab:1}, we see that the times to create the key shares gets nearly cut in half every time we double the number of threads. So we can say the speedup is "near linear".
+
+\ExecuteMetaData[\FilePath/3-ex1/32-ex1-img]{mtag1}
+\ExecuteMetaData[\FilePath/3-ex1/32-ex1-img]{mtag200}
+
+%\todo[inline]{check me on this paragraph Isaac}
+\indent We get similar scaling results when joining the shares back together to get the original secret, shown in Figure \ref{fig:2} and Table \ref{tab:2}.  It's import to note here, that we start to see increases in time at 16 threads when joining the keys back together.  This is still an open research question, but we suspect that the cost of spawning 16 threads is greater than the problem size, therefore an increase in time occurs.  Also, the critical region has to synchronize more often with 16 threads entering the critical region, which is likely another culprit for the increases.
+
+\ExecuteMetaData[\FilePath/3-ex1/32-ex1-img]{mtag2}
+\ExecuteMetaData[\FilePath/3-ex1/32-ex1-img]{mtag201}
+
+\subsection{Weak Scaling}
+
+\indent We discovered a second inner loop in the split\_string function that provided beneficial results in our weak scaling test.  Table \ref{tab:3} shows our time results for our weak scaling test.  We had positive results with our weak scaling tests. The times stay relatively the same as we double the input and number of threads. It's not perfect weak scaling because there are increases, but the increases are less than the increase in problem size.
+
+\ExecuteMetaData[\FilePath/3-ex1/32-ex1-img]{mtag203}
+
+
+
+\end{document}
