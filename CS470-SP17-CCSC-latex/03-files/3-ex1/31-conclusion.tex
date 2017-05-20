@@ -3,7 +3,7 @@
 
 \begin{document}
 
-\indent It was very satisfying to get the amount of speedup and scaling that we did using only OpenMP. In our project, we did not make any attempt to decide whether or not it is useful to parallelize Shamir's in real world applications. We simply set out to study the parallelization of an existing implementation, and we were successful. Future work could be on using Shamir's with distributed memory parallelism using tools like MPI. It would be interesting to discover if it would continue to scale or if the communication between nodes would be a limiting factor on speedup. We concluded that the best approach to using MPI with Shamir's would be to write an implementation from scratch with the intent of having MPI compatibility. Rabin's secret sharing algorithm \cite{five} would also be a good option for parallelism in future research. We hope our work can serve as a stepping stone for future projects, as there is still a lot that can be done with Shamir's as well as other secret sharing algorithms, in regards to parallel and distributed systems.
+\indent We were successful in parallelizing Shamir's secret sharing algorithm, and achieved near linear scaling using OpenMP. Future work could extend this work to distributed memory architectures using message-passing frameworks like MPI, exploring whether the communication between nodes would be a limiting factor on speedup. Rabin's secret sharing algorithm \cite{five} would also be a good option for parallelism in future research. We hope our work can serve as a stepping stone for future projects, as there is still a lot that can be done with secret sharing algorithms in the context of parallel and distributed systems.
 
 %\paragraph{MPI}
 %\hfill \break

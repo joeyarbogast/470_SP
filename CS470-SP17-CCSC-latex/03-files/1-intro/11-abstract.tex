@@ -2,9 +2,6 @@
 \begin{document}
 \section{ABSTRACT} \label{sec1}
 
-\indent This paper describes how Shamir's Secret Sharing algorithm can be parallelized, decreasing the time of generating keys for large secrets shared among a large group of participants.  Using an open source C implementation of Shamir's algorithm and the OpenMP API, we explored regions of the algorithm where running in parallel reduced the time for both key generation and joining the shares.  We were able to see near linear strong scaling results, both with generating the keys and combining them to reproduce the secret. We also observed weak scaling when generating the key shares.  By parallelizing Shamir's algorithm, a secret can be divided among many participants in a relatively short amount of time. 
-
-
-
+\indent This paper describes how Shamir's Secret Sharing algorithm can be parallelized, decreasing the time required to generate keys for secrets shared among a large group of participants. Using an open source C implementation of Shamir's algorithm and OpenMP, we found regions of the algorithm where running in parallel reduced execution time significantly. We were able to see near linear strong scaling results in both the key share generation phase and the re-combining phase. We also observed weak scaling when generating the key shares. Our work enables more efficient secret-sharing using Shamir's algorithm.
 
 \end{document}
