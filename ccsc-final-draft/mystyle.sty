@@ -1,0 +1,68 @@
+\usepackage{subfiles}
+
+%%  DOCUMENT STYLE 
+%\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\usepackage{graphicx,caption}
+\usepackage{adjustbox}
+
+\newcommand*{\FilePath}{03-files}
+\newcommand*{\ImgPath}{02-img-pdf}
+
+\usepackage{lipsum}
+
+\renewcommand{\thesection}{\arabic{section}}
+
+%\usepackage{fancyhdr}
+%\pagestyle{fancy}
+%\fancyhf{}
+
+
+%%  right header
+%\rhead{}
+%% left header
+%\lhead{}
+%% left footer
+%\lfoot{Page \thepage}
+%% right footer
+%\rfoot{\today}
+
+%% Change the thickness of the header and footer horizontal lines 
+%\renewcommand{\headrulewidth}{\rule{\textwidth}{0.5pt}}
+%\renewcommand{\footrulewidth}{\rule{\textwidth}{0.5pt}}
+
+\usepackage{hyperref}
+\hypersetup{linktocpage=true,
+    colorlinks=true,
+    citecolor=blue,
+    filecolor=black,
+    linkcolor=red,
+    urlcolor=blue
+}
+
+\usepackage{float} 
+\usepackage{catchfilebetweentags}
+
+\setcounter{secnumdepth}{1} 
+\setcounter{secnumdepth}{4}
+
+\setcounter{tocdepth}{3} 
+\setcounter{tocdepth}{4}
+
+\usepackage{enumitem} 
+
+\usepackage{geometry}
+\geometry{letterpaper, portrait, margin=1in}
+
+\usepackage{python}
+%\usepackage[numbers, compress]{natbib}
+\usepackage[backend=bibtex,style=ieee]{biblatex}
+\bibliography{\FilePath/6-ref/62-src}
+
+\usepackage{todonotes}
+
+\usepackage{soul}
+\usepackage{color}
+\usepackage{indentfirst}
+\usepackage[final]{pdfpages}
+
+

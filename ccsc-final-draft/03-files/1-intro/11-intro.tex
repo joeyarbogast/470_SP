@@ -1,0 +1,30 @@
+\documentclass[main.tex]{subfiles}
+\begin{document}
+\section{INTRODUCTION} \label{sec2}
+%Introduction goes here
+
+\indent Shamir's secret sharing scheme is a method for dividing a secret among a group, where a certain threshold of the keys must be combined in order to reproduce the secret.  With large secrets such as an entire text document, this process can be slow and expensive, especially if the number of participants and the threshold are high. In this paper we explore opportunities for parallelism in the algorithm, with a goal of reducing the amount of time taken to generate keys and join keys in a scalable manner. Scaling in performance analysis is broken into two categories: weak and strong scaling. A program scales weakly if when the problem size and number of processes/threads increases proportionally, the execution time stays relatively the same. A program scales strongly if when the number of processes/threads increases while keeping a constant problem size, the execution time decreases.
+
+\subsection{Background}
+
+\indent Shamir's secret sharing algorithm, explained in \cite{three}, works by taking the number of keys desired (n) and the threshold that is required to unlock the secret (t).  The algorithm computes the keys by generating a random polynomial equation of degree t-1.  The secret becomes the constant value in the polynomial equation.\\ \\
+
+\textbf{Example 2-1:}
+
+\[ 4x^3 +  9x^2 + 3x + secret\]
+
+\indent The required threshold to reproduce the secret of the function listed in Example 2-1 would be 4 keys (t - 1 = degree 3 polynomial). After generating the random polynomial the algorithm computes X and Y coordinate pairs by generating a random X value and plugging it into the polynomial function to get a corresponding Y value.  This is repeated n times for each character in the input file.  The XY pairs become the keys that are distributed to each individual in the group. \\
+\indent The problem with this approach (when computed serially) is that an XY ordered pair for each character of the input data must be computed n number of times. This process is slow and provides opportunities for data parallelism.
+
+
+%This paragraph probably needs to be reworked into something better or maybe even removed
+%When we originally started this project and began looking into Shamir's Secret Sharing, we were unsure if there would be any benefit to parallelizing or distributing the algorithm.  We discovered after experimenting with the open source serial implementation that we, that the algorithm was very slow at generating keys for a large number of participants using large text files.  \\
+
+\subsection{Project goals}
+
+\indent Using an open source C implementation of Shamir's secret sharing algorithm \cite{one}, we set out to explore the possible benefits of parallelizing Shamir's secret sharing algorithm.  The overall focus of our project was to speed up the process of generating key shares for large files between a large number of parties.
+
+%Lam said to rework this into project goals.......It doesn't seem to fit there to me, but I moved it here
+%To reproduce the secret the function join\_strings and join\_shares is called. The shares contain a few ingredients, which is why Shamir's Secret Sharing is not technically considered encryption.  Each key contains the number of shares and the required unlock threshold in hexadecimal. The secret is reproduced from a mathematical equation called Lagrange Interpolating Polynomial \cite{four}. This equation is implemented in the join\_shares function in our program and is used to determine the equation that produced the key shares, given a certain number of XY points. The join\_shares function was one of the regions we explored parallelism and were successful.%
+
+\end{document}
